@@ -1,0 +1,227 @@
+import {
+    NAV_ITEM_TYPE_TITLE,
+    NAV_ITEM_TYPE_ITEM,
+    NAV_ITEM_TYPE_COLLAPSE,
+} from '@/constants/navigation.constant'
+import { ADMIN, OPERATOR, SELLER, USER } from '@/constants/roles.constant'
+
+import type { NavigationTree } from '@/@types/navigation'
+
+const navigationConfig: NavigationTree[] = [
+    {
+        key: 'dashboardGroup',
+        path: '',
+        title: 'داشبورد',
+        translateKey: 'nav.dashboardGroup.title',
+        icon: 'groupMenu',
+        type: NAV_ITEM_TYPE_TITLE,
+        authority: [ADMIN],
+        subMenu: [
+            {
+                key: 'dashboardHome',
+                path: '/Home',
+                title: 'صفحه اصلی',
+                translateKey: 'nav.dashboardGroup.home',
+                icon: 'home',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [ADMIN],
+                subMenu: [],
+            },
+        ],
+    },
+
+    {
+        key: 'sellers',
+        path: '/sellers',
+        title: 'مدیریت فروشندگان',
+        translateKey: 'nav.sellers.title',
+        icon: 'seller',
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [],
+        subMenu: [],
+    },
+    
+    {
+        key: 'productsMenu',
+        path: '',
+        title: 'محصولات ',
+        translateKey: 'nav.siteStats.title',
+        icon: 'product',
+        type: NAV_ITEM_TYPE_COLLAPSE,
+        authority: [],
+        subMenu: [
+            {
+                key: 'products',
+                path: '/productsList',
+                title: 'لیست محصولات',
+                translateKey: 'nav.siteStats.registrationChart',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [ADMIN],
+                subMenu: [],
+            },
+                  {
+                key: 'productsType',
+                path: '/productsType',
+                title: 'دسته بندی',
+                translateKey: 'nav.siteStats.registrationChart',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [ADMIN],
+                subMenu: [],
+            },
+
+        ],
+    },
+
+
+    {
+        key: 'siteStats',
+        path: '',
+        title: 'آمار سایت',
+        translateKey: 'nav.siteStats.title',
+        icon: 'state',
+        type: NAV_ITEM_TYPE_COLLAPSE,
+        authority: [],
+        subMenu: [
+            {
+                key: 'analyticSection',
+                path: 'analytic',
+                title: 'نمودار ثبت نام',
+                translateKey: 'nav.siteStats.registrationChart',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+            {
+                key: 'subscriptionChart',
+                path: '/group-collapse-menu-item-view-2',
+                title: 'نمودار فروش اشتراک',
+                translateKey: 'nav.siteStats.subscriptionChart',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+            {
+                key: 'visitChart',
+                path: '/group-collapse-menu-item-view-2',
+                title: 'نمودار بازدید',
+                translateKey: 'nav.siteStats.visitChart',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+        ],
+    },
+    {
+        key: 'reports',
+        path: '',
+        title: 'گزارشات',
+        translateKey: 'nav.reports.title',
+        icon: 'report',
+        type: NAV_ITEM_TYPE_COLLAPSE,
+        authority: [],
+        subMenu: [
+            {
+                key: 'loginLogoutReport',
+                path: '/reports/activity-login',
+                title: 'گزارش ورود و خروج',
+                translateKey: 'nav.reports.loginLogout',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+            {
+                key: 'systemErrorReport',
+                path: '/reports/system-report',
+                title: 'گزارش خطای سیستمی ',
+                translateKey: 'nav.reports.systemError',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+              {
+                key: 'reports-crawler',
+                path: '/reports/crawler',
+                title: 'کرالر ',
+                translateKey: 'nav.reports.systemError',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+
+        ],
+    },
+    {
+        key: 'users',
+        path: '',
+        title: 'کاربران',
+        translateKey: 'nav.users.title',
+        icon: 'users',
+        type: NAV_ITEM_TYPE_COLLAPSE,
+        authority: [],
+        subMenu: [
+            {
+                key: 'userList',
+                path: '/users',
+                title: 'لیست کاربران',
+                translateKey: 'nav.users.userList',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+
+        ],
+    },
+    {
+        key: 'systemSettings',
+        path: '',
+        title: 'تنظیمات سیستم',
+        translateKey: 'nav.systemSettings.title',
+        icon: 'setting',
+        type: NAV_ITEM_TYPE_COLLAPSE,
+        authority: [],
+        subMenu: [
+            {
+                key: 'crawlerSettings',
+                path: '/crawler-setting',
+                title: 'تنظیمات کرالر',
+                translateKey: 'nav.systemSettings.crawler',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+            {
+                key: 'webServiceSettings',
+                path: '/api-setting',
+                title: 'تنظیمات وب سرویس',
+                translateKey: 'nav.systemSettings.webService',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+            {
+                key: 'adminSettings',
+                path: '/admin-setting',
+                title: 'تنظیمات مدیریتی',
+                translateKey: 'nav.systemSettings.admin',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+        ],
+    },
+]
+
+
+export default navigationConfig
