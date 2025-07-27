@@ -55,6 +55,22 @@ const AuthService = {
         })
     },
 
+    forgotPassword: async (data: { email: string }) => {
+        return ApiService.fetchDataWithAxios({
+            url: endpointConfig.forgotPassword,
+            method: 'post',
+            data,
+        })
+    },
+
+    resetPassword: async (data: { token: string; password: string; password_confirmation: string }) => {
+        return ApiService.fetchDataWithAxios({
+            url: endpointConfig.resetPassword,
+            method: 'post',
+            data,
+        })
+    },
+
     setToken: (token: string) => {
         const storage = appConfig.accessTokenPersistStrategy
         if (storage === 'localStorage') {
@@ -86,5 +102,8 @@ const AuthService = {
         }
     },
 }
+
+export const apiForgotPassword = AuthService.forgotPassword
+export const apiResetPassword = AuthService.resetPassword
 
 export default AuthService

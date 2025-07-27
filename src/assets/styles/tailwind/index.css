@@ -3,7 +3,7 @@
 @config '../../../../tailwind.config.cjs';
 @font-face {
 	font-family: kookExtraBold;
-	src: url("../../fonts/kook/Kook-ExtraBold.woff");
+	src: url("/fonts/kook/Kook-ExtraBold.woff");
 	font-style: normal;
 }
 @layer theme {
