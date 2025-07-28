@@ -1,4 +1,4 @@
-export type AppConfig = {
+export interface AppConfig {
     apiPrefix: string
     authenticatedEntryPath: string
     unAuthenticatedEntryPath: string
@@ -18,4 +18,4 @@ const appConfig: AppConfig = {
     activeNavTranslation: false,
 }
 
-export default appConfig
+export { appConfig as default }
