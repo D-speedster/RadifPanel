@@ -18,7 +18,7 @@ export const protectedRoutes: Routes = [
     {
         key: 'websites',
         path: '/websites',
-        component: lazy(() => import('@/views/demo/GroupCollapseMenuItemView2')),
+        component: lazy(() => import('@/views/concepts/websites/weblist')),
         authority: [],
     },
     // دسته بندی ها
@@ -72,8 +72,8 @@ export const protectedRoutes: Routes = [
     },
     {
         key: 'newUser',
-        path: '/newUser',
-        component: lazy(() => import('@/views/concepts/users/UserList')),
+        path: '/users/newUser',
+        component: lazy(() => import('@/views/concepts/users/UserCreate')),
         authority: [],
     },
     {

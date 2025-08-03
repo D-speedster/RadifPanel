@@ -165,9 +165,9 @@ const navigationConfig: NavigationTree[] = [
             },
             {
                 key: 'newUser',
-                path: '/newUser',
+                path: '/users/newUser',
                 title: 'افزودن کاربر',
-                translateKey: 'nav.users.usersList',
+                translateKey: 'nav.users.newUser',
                 icon: 'users',
                 type: NAV_ITEM_TYPE_ITEM,
                 authority: [],
