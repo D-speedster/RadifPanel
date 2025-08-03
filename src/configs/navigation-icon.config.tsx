@@ -4,8 +4,8 @@ import {
     PiArrowsInDuotone,
     PiBookOpenUserDuotone,
     PiBookBookmarkDuotone,
-    PiAcornDuotone, PiBagSimpleDuotone, PiUsersDuotone, PiChartBar, PiShoppingCartSimple
-
+    PiAcornDuotone, PiBagSimpleDuotone, PiUsersDuotone, PiChartBar, PiShoppingCartSimple,
+    PiGlobeDuotone, PiTagDuotone, PiMonitorDuotone, PiHeartbeatDuotone, PiRobotDuotone
 } from 'react-icons/pi'
 import { IoSettingsOutline } from "react-icons/io5";
 
@@ -26,6 +26,12 @@ const navigationIcon: NavigationIcons = {
     groupSingleMenu: <PiBookOpenUserDuotone />,
     groupCollapseMenu: <PiBookBookmarkDuotone />,
     groupMenu: <PiBagSimpleDuotone />,
+    // آیکون‌های جدید
+    website: <PiGlobeDuotone />,
+    category: <PiTagDuotone />,
+    monitoring: <PiMonitorDuotone />,
+    health: <PiHeartbeatDuotone />,
+    crawler: <PiRobotDuotone />,
 }
 
 export default navigationIcon
