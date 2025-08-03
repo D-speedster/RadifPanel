@@ -19,7 +19,7 @@ const navigationConfig: NavigationTree[] = [
         subMenu: [
             {
                 key: 'dashboardHome',
-                path: '/Home',
+                path: '/dashboard',
                 title: 'داشبورد',
                 translateKey: 'nav.dashboardGroup.home',
                 icon: 'home',
