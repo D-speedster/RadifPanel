@@ -14,29 +14,60 @@ export const protectedRoutes: Routes = [
         authority: [],
     },
 
+    // وبسایت ها
     {
-        key: 'products',
-        path: '/productsList',
+        key: 'websites',
+        path: '/websites',
+        component: lazy(() => import('@/views/demo/GroupCollapseMenuItemView2')),
+        authority: [],
+    },
+    // دسته بندی ها
+    {
+        key: 'categories',
+        path: '/categories',
+        component: lazy(() => import('@/views/demo/GroupCollapseMenuItemView2')),
+        authority: [],
+    },
+    // لیست محصولات
+    {
+        key: 'productsList',
+        path: '/products-list',
         component: lazy(() => import('@/views/concepts/products/ProductList/')),
         authority: [],
     },
-    /** Example purpose only, please remove */
+    // دسته بندی محصولات
     {
-        key: 'userList',
-        path: '/users',
-        component: lazy(() => import('@/views/concepts/users/UserList')),
+        key: 'productsCategory',
+        path: '/products-category',
+        component: lazy(() => import('@/views/demo/GroupCollapseMenuItemView2')),
         authority: [],
     },
+    // نمودار ثبت نام
     {
-        key: 'analyticSection',
-        path: '/analytic',
+        key: 'registrationChart',
+        path: '/stats/registration-chart',
         component: lazy(() => import('@/views/dashboards/AnalyticDashboard')),
         authority: [],
     },
+    // نمودار فروش اشتراک
     {
-        key: 'status-websites',
-        path: '/status-websites',
-        component: lazy(() => import('@/views/demo/CollapseMenuItemView1')),
+        key: 'subscriptionChart',
+        path: '/stats/subscription-chart',
+        component: lazy(() => import('@/views/demo/GroupCollapseMenuItemView2')),
+        authority: [],
+    },
+    // نمودار بازدید
+    {
+        key: 'visitChart',
+        path: '/stats/visit-chart',
+        component: lazy(() => import('@/views/demo/GroupCollapseMenuItemView2')),
+        authority: [],
+    },
+    // لیست کاربران
+    {
+        key: 'usersList',
+        path: '/users-list',
+        component: lazy(() => import('@/views/concepts/users/UserList')),
         authority: [],
     },
     {
@@ -68,66 +99,39 @@ export const protectedRoutes: Routes = [
         authority: [],
     },
 
+    // سرویس کرالر (مانیتورینگ)
     {
-        key: 'reports-crawler',
-        path: '/reports/crawler',
+        key: 'crawlerService',
+        path: '/monitoring/crawler-service',
         component: lazy(
             () => import('@/views/concepts/Crawling'),
         ),
         authority: [],
     },
+    // تست سلامت (مانیتورینگ)
     {
-        key: 'loginLogoutReport',
-        path: '/reports/activity-login',
+        key: 'healthTest',
+        path: '/monitoring/health-test',
         component: lazy(
-            () => import('@/views/concepts/reports/activity-login'),
+            () => import('@/views/demo/GroupCollapseMenuItemView2'),
         ),
         authority: [],
     },
-    {
-        key: 'systemErrorReport',
-        path: '/reports/system-report',
-        component: lazy(
-            () => import('@/views/concepts/reports/system-report'),
-        ),
-        authority: [],
-    },
+    // تنظیمات کرالر
     {
         key: 'crawlerSettings',
-        path: '/crawler-setting',
-        component: lazy(
-            () => import('@/views/demo/GroupCollapseMenuItemView2'),
-        ),
-        authority: [],
-    }, {
-        key: 'webServiceSettings',
-        path: '/api-setting',
+        path: '/settings/crawler',
         component: lazy(
             () => import('@/views/demo/GroupCollapseMenuItemView2'),
         ),
         authority: [],
     },
+    // تنظیمات وبسایت
     {
-        key: 'adminSettings',
-        path: '/admin-setting',
+        key: 'websiteSettings',
+        path: '/settings/website',
         component: lazy(
             () => import('@/views/demo/GroupCollapseMenuItemView2'),
-        ),
-        authority: [],
-    },
-    {
-        key: 'productsType',
-        path: '/productsType',
-        component: lazy(
-            () => import('@/views/demo/GroupCollapseMenuItemView2'),
-        ),
-        authority: [],
-    },
-    {
-        key: 'https://api.radif.org/',
-        path: '/https://api.radif.org/',
-        component: lazy(
-            () => import('@/views/concepts/products/ProductList'),
         ),
         authority: [],
     },
