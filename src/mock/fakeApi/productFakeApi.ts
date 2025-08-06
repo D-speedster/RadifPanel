@@ -32,3 +32,34 @@ mock.onGet(/\/api\/products\/\d+/).reply((config) => {
         return [404, { message: 'Product not found' }]
     }
 })
+
+// Mock API for updating product
+mock.onPut(/\/products\/\d+/).reply((config) => {
+    const url = config.url || ''
+    const productId = url.split('/').pop()
+    const updatedData = JSON.parse(config.data)
+    
+    const productIndex = productListData.findIndex(p => p.id === productId)
+    
+    if (productIndex !== -1) {
+        productListData[productIndex] = { ...productListData[productIndex], ...updatedData }
+        return [200, productListData[productIndex]]
+    } else {
+        return [404, { message: 'Product not found' }]
+    }
+})
+
+// Mock API for deleting product
+mock.onDelete(/\/products\/\d+/).reply((config) => {
+    const url = config.url || ''
+    const productId = url.split('/').pop()
+    
+    const productIndex = productListData.findIndex(p => p.id === productId)
+    
+    if (productIndex !== -1) {
+        productListData.splice(productIndex, 1)
+        return [200, { message: 'Product deleted successfully' }]
+    } else {
+        return [404, { message: 'Product not found' }]
+    }
+})

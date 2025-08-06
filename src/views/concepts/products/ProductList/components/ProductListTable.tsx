@@ -82,8 +82,8 @@ const ProductListTable = () => {
         setToDeleteId(product.id)
     }
 
-    const handleEdit = (product: Product) => {
-        navigate(`/concepts/products/product-edit/${product.id}`)
+    const handleEdit = (product: ProductColumn) => {
+        navigate(`/products-list/product/${product.id}/edit`)
     }
 
     const handleConfirmDelete = () => {

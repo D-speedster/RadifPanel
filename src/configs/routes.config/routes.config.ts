@@ -41,6 +41,13 @@ export const protectedRoutes: Routes = [
         component: lazy(() => import('@/views/concepts/products/ProductList/')),
         authority: [],
     },
+    // ویرایش محصولات
+    {
+        key: 'productsEdit',
+        path: '/products-list/product/:id/edit',
+        component: lazy(() => import('@/views/concepts/products/ProductEdit').then(module => ({ default: module.ProductEdit }))),
+        authority: [],
+    },
     // دسته بندی محصولات
     {
         key: 'productsCategory',

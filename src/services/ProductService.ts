@@ -32,3 +32,23 @@ export async function apiGetProduct<T, U extends Record<string, unknown>>({
         params,
     })
 }
+
+export async function apiUpdateProduct<T, U extends Record<string, unknown>>(
+    id: string | number,
+    data: U,
+) {
+    return ApiService.fetchDataWithAxios<T>({
+        url: `/products/${id}`,
+        method: 'put',
+        data,
+    })
+}
+
+export async function apiDeleteProduct<T>(
+    id: string | number,
+) {
+    return ApiService.fetchDataWithAxios<T>({
+        url: `/products/${id}`,
+        method: 'delete',
+    })
+}
