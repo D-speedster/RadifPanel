@@ -31,7 +31,25 @@ export const protectedRoutes: Routes = [
     {
         key: 'categories',
         path: '/categories',
-        component: lazy(() => import('@/views/demo/GroupCollapseMenuItemView2')),
+        component: lazy(() => import('@/views/concepts/categories')),
+        authority: [],
+    },
+    {
+        key: 'categoryDetails',
+        path: '/categories/:id',
+        component: lazy(() => import('@/views/concepts/categories/CategoryDetails')),
+        authority: [],
+    },
+    {
+        key: 'categoryEdit',
+        path: '/categories/:id/edit',
+        component: lazy(() => import('@/views/concepts/categories/CategoryForm')),
+        authority: [],
+    },
+    {
+        key: 'categoryCreate',
+        path: '/categories/new',
+        component: lazy(() => import('@/views/concepts/categories/CategoryForm')),
         authority: [],
     },
     // لیست محصولات
@@ -132,7 +150,7 @@ export const protectedRoutes: Routes = [
         key: 'healthTest',
         path: '/monitoring/health-test',
         component: lazy(
-            () => import('@/views/demo/GroupCollapseMenuItemView2'),
+            () => import('@/views/concepts/monitoring/HealthTest'),
         ),
         authority: [],
     },
@@ -141,7 +159,7 @@ export const protectedRoutes: Routes = [
         key: 'crawlerSettings',
         path: '/settings/crawler',
         component: lazy(
-            () => import('@/views/demo/GroupCollapseMenuItemView2'),
+            () => import('@/views/settings/CrawlerSettings'),
         ),
         authority: [],
     },
@@ -150,7 +168,7 @@ export const protectedRoutes: Routes = [
         key: 'websiteSettings',
         path: '/settings/website',
         component: lazy(
-            () => import('@/views/demo/GroupCollapseMenuItemView2'),
+            () => import('@/views/settings/WebsiteSettings'),
         ),
         authority: [],
     },
