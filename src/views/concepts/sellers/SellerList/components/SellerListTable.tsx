@@ -152,6 +152,9 @@ const SellerListTable = () => {
         mutate,
     } = useSellerList()
 
+    // Debug logging
+
+
     useEffect(() => {
         const removeListener = addNetworkStatusListener((online) => {
             setIsOnlineStatus(online)

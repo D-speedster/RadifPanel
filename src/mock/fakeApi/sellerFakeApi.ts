@@ -2,10 +2,25 @@ import { sellersData } from '../data/sellerData'
 import type { Seller, Filter, GetSellerListResponse } from '@/views/concepts/sellers/SellerList/types'
 
 export default function sellerFakeApi(mock: any) {
-    mock.onGet('/sellers/all').reply((config: any) => {
-        const { pageIndex = 0, pageSize = 10, sort, query } = config.params || {}
+    mock.onGet('/api/sellers/all').reply((config: any) => {
+        const { pageIndex = 0, pageSize = 10, sort, query, sellerStatus, sellerRole } = config.params || {}
         
+
         let filteredSellers = [...sellersData]
+        
+        // Apply status filter
+        if (sellerStatus && sellerStatus !== 'all' && sellerStatus !== '') {
+            filteredSellers = filteredSellers.filter(
+                (seller) => seller.status === sellerStatus
+            )
+        }
+        
+        // Apply role filter
+        if (sellerRole && Array.isArray(sellerRole) && sellerRole.length > 0) {
+            filteredSellers = filteredSellers.filter(
+                (seller) => seller.role && sellerRole.includes(seller.role)
+            )
+        }
         
         // Apply search filter
         if (query) {
@@ -42,7 +57,7 @@ export default function sellerFakeApi(mock: any) {
         return [200, response]
     })
     
-    mock.onGet(/\/sellers\/.*/).reply((config: any) => {
+    mock.onGet(/\/api\/sellers\/.*/).reply((config: any) => {
         const idParam = config.url.split('/').pop()
         const id = parseInt(idParam)
         const seller = sellersData.find((s) => s.id === id)

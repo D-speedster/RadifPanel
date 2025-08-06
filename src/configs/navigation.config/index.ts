@@ -39,6 +39,7 @@ const navigationConfig: NavigationTree[] = [
         authority: [],
         subMenu: [],
     },
+
     {
         key: 'sellers',
         path: '/sellers',
@@ -195,7 +196,7 @@ const navigationConfig: NavigationTree[] = [
                 authority: [],
                 subMenu: [],
             },
-           
+
             {
                 key: 'websiteSettings',
                 path: '/settings/website',

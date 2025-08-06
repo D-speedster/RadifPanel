@@ -35,7 +35,6 @@ const useSellerList = () => {
     )
 
     const sellerList = data?.list || []
-
     const sellerListTotal = data?.total || 0
 
     return {

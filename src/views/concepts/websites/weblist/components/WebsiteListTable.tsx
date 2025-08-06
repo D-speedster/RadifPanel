@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import DataTable from '@/components/shared/DataTable'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import Badge from '@/components/ui/Badge'
@@ -22,56 +22,11 @@ import {
     TbCircleX,
 } from 'react-icons/tb'
 import { useNavigate } from 'react-router-dom'
+import { apiGetWebsitesList } from '@/services/WebsiteService'
 import type { Website } from '../types'
 import type { ColumnDef } from '@/components/shared/DataTable'
 
-// Mock data for demonstration
-const mockWebsites: Website[] = [
-    {
-        id: 1,
-        name: 'دیجی‌کالا',
-        url: 'https://www.digikala.com',
-        isActive: true,
-        lastCrawlDate: '1403/05/10 - 13:45',
-        crawlerStatus: 'success',
-        productCount: 15420,
-        created_at: '1403/01/15',
-        updated_at: '1403/05/10',
-    },
-    {
-        id: 2,
-        name: 'تکنولایف',
-        url: 'https://www.bamilo.com',
-        isActive: true,
-        lastCrawlDate: '1403/05/09 - 09:30',
-        crawlerStatus: 'error',
-        productCount: 8750,
-        created_at: '1403/02/01',
-        updated_at: '1403/05/09',
-    },
-    {
-        id: 3,
-        name: 'گوشی شاپ',
-        url: 'https://www.gooshishop.com',
-        isActive: false,
-        lastCrawlDate: null,
-        crawlerStatus: 'unknown',
-        productCount: 0,
-        created_at: '1403/03/10',
-        updated_at: '1403/03/10',
-    },
-    {
-        id: 4,
-        name: 'اسنپ‌مارکت',
-        url: 'https://snappmarket.com',
-        isActive: true,
-        lastCrawlDate: '1403/05/10 - 16:20',
-        crawlerStatus: 'pending',
-        productCount: 3200,
-        created_at: '1403/04/05',
-        updated_at: '1403/05/10',
-    },
-]
+
 
 const WebsiteColumn = ({ row }: { row: Website }) => {
     return (
@@ -231,9 +186,28 @@ const ActionColumn = ({
 
 const WebsiteListTable = () => {
     const navigate = useNavigate()
+    const [websites, setWebsites] = useState<Website[]>([])
+    const [loading, setLoading] = useState(true)
     const [crawlingWebsites, setCrawlingWebsites] = useState<Set<number>>(new Set())
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
     const [selectedWebsite, setSelectedWebsite] = useState<Website | null>(null)
+
+    useEffect(() => {
+        const fetchWebsites = async () => {
+            try {
+                setLoading(true)
+                const response = await apiGetWebsitesList({})
+                setWebsites(response.list || [])
+            } catch (error) {
+                console.error('Error fetching websites:', error)
+                setWebsites([])
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchWebsites()
+    }, [])
 
     const columns: ColumnDef<Website>[] = useMemo(
         () => [
@@ -333,7 +307,7 @@ const WebsiteListTable = () => {
     )
 
     const handleEdit = (website: Website) => {
-        navigate(`/websites/edit/${website.id}`)
+        navigate(`/websites/${website.id}/edit`)
     }
 
     const handleDelete = (website: Website) => {
@@ -369,10 +343,10 @@ const WebsiteListTable = () => {
         <>
             <DataTable<Website>
                 columns={columns}
-                data={mockWebsites}
-                loading={false}
+                data={websites}
+                loading={loading}
                 pagingData={{
-                    total: mockWebsites.length,
+                    total: websites.length,
                     pageIndex: 0,
                     pageSize: 10,
                 }}

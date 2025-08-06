@@ -21,6 +21,12 @@ export const protectedRoutes: Routes = [
         component: lazy(() => import('@/views/concepts/websites/weblist')),
         authority: [],
     },
+      {
+        key: 'websiteEdit',
+        path: '/websites/:id/edit',
+        component: lazy(() => import('@/views/concepts/websites/WebsiteEdit')),
+        authority: [],
+    },
     // دسته بندی ها
     {
         key: 'categories',
@@ -84,8 +90,8 @@ export const protectedRoutes: Routes = [
     },
     {
         key: 'sellersEdit',
-        path: '/sellers/Edit',
-        component: lazy(() => import('@/views/concepts/customers/CustomerEdit')),
+        path: '/sellers/edit/:id',
+        component: lazy(() => import('@/views/concepts/sellers/SellerEdit')),
         authority: [],
     },
     {

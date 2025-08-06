@@ -55,6 +55,7 @@ type DataTableProps<T> = {
     }
     checkboxChecked?: (row: T) => boolean
     indeterminateCheckboxChecked?: (row: Row<T>[]) => boolean
+    enableSorting?: boolean
     ref?: Ref<DataTableResetHandle | HTMLTableElement>
 } & TableProps
 
@@ -133,6 +134,7 @@ function DataTable<T>(props: DataTableProps<T>) {
         indeterminateCheckboxChecked,
         instanceId = 'data-table',
         ref,
+        enableSorting,
         ...rest
     } = props
 

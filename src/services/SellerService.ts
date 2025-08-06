@@ -7,7 +7,7 @@ export async function apiGetSellerList<T, U extends Record<string, unknown>>(
     params: U,
 ) {
     const response = await ApiService.fetchDataWithAxios<any>({
-        url: '/sellers/all',
+        url: '/api/sellers/all',
         method: 'get',
         params,
     })
@@ -63,8 +63,28 @@ export async function apiGetSeller<T, U extends Record<string, unknown>>({
     
     // اگر هنوز فروشنده را پیدا نکردیم، از API درخواست می‌کنیم
     return ApiService.fetchDataWithAxios<T>({
-        url: `/sellers/${id}`,
+        url: `/api/sellers/${id}`,
         method: 'get',
         params,
+    })
+}
+
+export async function apiUpdateSeller<T, U extends Record<string, unknown>>(
+    id: string | number,
+    data: U,
+) {
+    return ApiService.fetchDataWithAxios<T>({
+        url: `/sellers/${id}`,
+        method: 'put',
+        data,
+    })
+}
+
+export async function apiDeleteSeller<T>(
+    id: string | number,
+) {
+    return ApiService.fetchDataWithAxios<T>({
+        url: `/sellers/${id}`,
+        method: 'delete',
     })
 }

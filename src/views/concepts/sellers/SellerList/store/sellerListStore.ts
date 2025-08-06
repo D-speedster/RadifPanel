@@ -3,7 +3,7 @@ import type { TableQueries } from '@/@types/common'
 import type { Seller, Filter } from '../types'
 
 export const initialTableData: TableQueries = {
-    pageIndex: 1,
+    pageIndex: 0,
     pageSize: 10,
     query: '',
     sort: {
@@ -13,8 +13,8 @@ export const initialTableData: TableQueries = {
 }
 
 export const initialFilterData = {
-    sellerStatus: 'active',
-    sellerRole: ['admin', 'seller', 'moderator'],
+    sellerStatus: '',
+    sellerRole: [],
 }
 
 export type SellersListState = {
