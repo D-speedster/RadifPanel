@@ -2,6 +2,7 @@ import ApiService from './ApiService'
 import endpointConfig from '@/configs/endpoint.config'
 import { TOKEN_NAME_IN_STORAGE } from '@/constants/api.constant'
 import appConfig from '@/configs/app.config'
+import cookiesStorage from '@/utils/cookiesStorage'
 import type { SignInCredential, SignInResponse, User } from '@/@types/auth'
 
 const AuthService = {
@@ -79,6 +80,9 @@ const AuthService = {
         if (storage === 'sessionStorage') {
             sessionStorage.setItem(TOKEN_NAME_IN_STORAGE, token)
         }
+        if (storage === 'cookies') {
+            cookiesStorage.setItem(TOKEN_NAME_IN_STORAGE, token)
+        }
     },
 
     getToken: () => {
@@ -88,6 +92,9 @@ const AuthService = {
         }
         if (storage === 'sessionStorage') {
             return sessionStorage.getItem(TOKEN_NAME_IN_STORAGE)
+        }
+        if (storage === 'cookies') {
+            return cookiesStorage.getItem(TOKEN_NAME_IN_STORAGE)
         }
         return null
     },
@@ -99,6 +106,9 @@ const AuthService = {
         }
         if (storage === 'sessionStorage') {
             sessionStorage.removeItem(TOKEN_NAME_IN_STORAGE)
+        }
+        if (storage === 'cookies') {
+            cookiesStorage.removeItem(TOKEN_NAME_IN_STORAGE)
         }
     },
 }

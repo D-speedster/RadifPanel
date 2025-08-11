@@ -30,17 +30,6 @@ const navigationConfig: NavigationTree[] = [
         ],
     },
     {
-        key: 'websites',
-        path: '/websites',
-        title: 'وبسایت ها',
-        translateKey: 'nav.websites.title',
-        icon: 'website',
-        type: NAV_ITEM_TYPE_ITEM,
-        authority: [],
-        subMenu: [],
-    },
-
-    {
         key: 'sellers',
         path: '/sellers',
         title: ' فروشندگان',
@@ -66,6 +55,16 @@ const navigationConfig: NavigationTree[] = [
         title: 'محصولات',
         translateKey: 'nav.categories.title',
         icon: 'product',
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [],
+        subMenu: [],
+    },
+    {
+        key: 'websites',
+        path: '/websites',
+        title: 'سایت ها',
+        translateKey: 'nav.websites.title',
+        icon: 'website',
         type: NAV_ITEM_TYPE_ITEM,
         authority: [],
         subMenu: [],
@@ -196,11 +195,10 @@ const navigationConfig: NavigationTree[] = [
                 authority: [],
                 subMenu: [],
             },
-
             {
                 key: 'websiteSettings',
                 path: '/settings/website',
-                title: 'تنظیمات وبسایت',
+                title: 'تنظیمات سایت',
                 translateKey: 'nav.settings.website',
                 icon: 'website',
                 type: NAV_ITEM_TYPE_ITEM,

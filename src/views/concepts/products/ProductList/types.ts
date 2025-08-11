@@ -1,3 +1,16 @@
+export type Product = {
+    id: string
+    name: string
+    productCode: string
+    img: string
+    category: string
+    price: number
+    stock: number
+    status: number
+    sales: number
+    salesPercentage: number
+}
+
 export type ProductColumn = {
     id: number
     title: string

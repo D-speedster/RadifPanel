@@ -5,9 +5,9 @@ import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import UserForm from '../UserForm'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import sleep from '@/utils/sleep'
 import { TbTrash } from 'react-icons/tb'
 import { useNavigate } from 'react-router'
+import { apiCreateUser } from '@/services/UserService'
 import type { UserFormSchema } from '../UserForm'
 
 const UserCreate = () => {
@@ -19,13 +19,21 @@ const UserCreate = () => {
 
     const handleFormSubmit = async (values: UserFormSchema) => {
         setIsSubmiting(true)
-        await sleep(800)
-        setIsSubmiting(false)
-        toast.push(
-            <Notification type="success">کاربر جدید ایجاد شد!</Notification>,
-            { placement: 'top-center' },
-        )
-        navigate('/users-list')
+        try {
+            await apiCreateUser(values)
+            toast.push(
+                <Notification type="success">کاربر جدید ایجاد شد!</Notification>,
+                { placement: 'top-center' },
+            )
+            navigate('/users-list')
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">خطا در ایجاد کاربر!</Notification>,
+                { placement: 'top-center' },
+            )
+        } finally {
+            setIsSubmiting(false)
+        }
     }
 
     const handleConfirmDiscard = () => {

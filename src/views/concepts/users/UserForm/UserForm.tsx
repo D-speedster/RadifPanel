@@ -19,12 +19,14 @@ type UserFormProps = {
     newUser?: boolean
 } & CommonProps
 
-const createValidationSchema = (role: string) => {
+const createValidationSchema = (role: string, isEdit: boolean = false) => {
     const baseSchema = {
         fullName: z.string().min(1, { message: 'نام کامل الزامی است' }),
         email: z.string().email({ message: 'ایمیل نامعتبر است' }).optional().or(z.literal('')),
         phone: z.string().min(1, { message: 'شماره تلفن الزامی است' }),
-        password: z.string().min(6, { message: 'رمز عبور باید حداقل ۶ کاراکتر باشد' }),
+        password: isEdit 
+            ? z.string().optional().or(z.literal('')) // اختیاری برای ویرایش
+            : z.string().min(6, { message: 'رمز عبور باید حداقل ۶ کاراکتر باشد' }),
         role: z.string().min(1, { message: 'انتخاب نقش الزامی است' }),
         status: z.string().min(1, { message: 'انتخاب وضعیت الزامی است' }),
     }
@@ -113,7 +115,7 @@ const UserForm = (props: UserFormProps) => {
             workArea: '',
             ...defaultValues,
         },
-        resolver: zodResolver(createValidationSchema('')),
+        resolver: zodResolver(createValidationSchema('', !newUser)),
     })
 
     const selectedRole = useWatch({

@@ -13,20 +13,6 @@ export const protectedRoutes: Routes = [
         component: lazy(() => import('@/views/dashboards/EcommerceDashboard/')),
         authority: [],
     },
-
-    // وبسایت ها
-    {
-        key: 'websites',
-        path: '/websites',
-        component: lazy(() => import('@/views/concepts/websites/weblist')),
-        authority: [],
-    },
-      {
-        key: 'websiteEdit',
-        path: '/websites/:id/edit',
-        component: lazy(() => import('@/views/concepts/websites/WebsiteEdit')),
-        authority: [],
-    },
     // دسته بندی ها
     {
         key: 'categories',
@@ -108,6 +94,12 @@ export const protectedRoutes: Routes = [
         authority: [],
     },
     {
+        key: 'userEdit',
+        path: '/concepts/users/user-edit/:id',
+        component: lazy(() => import('@/views/concepts/users/UserEdit')),
+        authority: [],
+    },
+    {
         key: 'sellers',
         path: '/sellers',
         component: lazy(() => import('@/views/concepts/sellers/SellerList')),
@@ -133,6 +125,19 @@ export const protectedRoutes: Routes = [
         component: lazy(
             () => import('@/views/demo/GroupCollapseMenuItemView2'),
         ),
+        authority: [],
+    },
+    // سایت ها
+    {
+        key: 'websites',
+        path: '/websites',
+        component: lazy(() => import('@/views/concepts/websites/weblist')),
+        authority: [],
+    },
+    {
+        key: 'websiteEdit',
+        path: '/websites/:id/edit',
+        component: lazy(() => import('@/views/concepts/websites/WebsiteEdit')),
         authority: [],
     },
 
@@ -163,7 +168,7 @@ export const protectedRoutes: Routes = [
         ),
         authority: [],
     },
-    // تنظیمات وبسایت
+    // تنظیمات سایت
     {
         key: 'websiteSettings',
         path: '/settings/website',

@@ -10,7 +10,15 @@ export async function apiGetProductList<T, U extends Record<string, unknown>>(
     })
     
     // Transform the response to match the expected format
-    // API returns array directly, but frontend expects {list: [], total: number}
+    // API returns {message: string, products: []} but frontend expects {list: [], total: number}
+    if (response && response.products && Array.isArray(response.products)) {
+        return {
+            list: response.products,
+            total: response.products.length
+        } as T
+    }
+    
+    // Fallback for array response
     if (Array.isArray(response)) {
         return {
             list: response,

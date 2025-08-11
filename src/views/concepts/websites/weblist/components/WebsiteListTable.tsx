@@ -71,7 +71,7 @@ const getCrawlerStatusBadge = (status: Website['crawlerStatus']) => {
         }
     }
 
-    const config = statusConfig[status]
+    const config = statusConfig[status] || statusConfig.unknown
     return (
         <div className={`flex items-center gap-2 ${config.color}`}>
             {config.icon}

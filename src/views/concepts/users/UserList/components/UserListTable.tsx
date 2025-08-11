@@ -9,6 +9,9 @@ import { useNavigate } from 'react-router-dom'
 import { TbPencil, TbTrash, TbWifiOff } from 'react-icons/tb'
 import { FiUser } from 'react-icons/fi'
 import { isOnline, getErrorMessage, addNetworkStatusListener } from '@/utils/networkUtils'
+import { apiDeleteUser } from '@/services/UserService'
+import Notification from '@/components/ui/Notification'
+import toast from '@/components/ui/toast'
 import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
 import type { User } from '../types'
 import type { TableQueries } from '@/@types/common'
@@ -66,6 +69,7 @@ const UserListTable = () => {
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
     const [toDeleteId, setToDeleteId] = useState('')
     const [networkStatus, setNetworkStatus] = useState(isOnline())
+    const [isDeleting, setIsDeleting] = useState(false)
 
     // Network status monitoring
     useEffect(() => {
@@ -86,20 +90,38 @@ const UserListTable = () => {
         navigate(`/concepts/users/user-edit/${user.id}`)
     }
 
-    const handleConfirmDelete = () => {
-        const newUserList = userList.filter((user) => {
-            return !(toDeleteId === user.id)
-        })
-        setSelectAllUser([])
-        mutate(
-            {
-                list: newUserList,
-                total: userListTotal - selectedUser.length,
-            },
-            false,
-        )
-        setDeleteConfirmationOpen(false)
-        setToDeleteId('')
+    const handleConfirmDelete = async () => {
+        setIsDeleting(true)
+        try {
+            await apiDeleteUser(toDeleteId)
+            
+            // Update local state after successful API call
+            const newUserList = userList.filter((user) => {
+                return !(toDeleteId === user.id)
+            })
+            setSelectAllUser([])
+            mutate(
+                {
+                    list: newUserList,
+                    total: userListTotal - 1,
+                },
+                false,
+            )
+            
+            toast.push(
+                <Notification type="success">کاربر با موفقیت حذف شد!</Notification>,
+                { placement: 'top-center' },
+            )
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">خطا در حذف کاربر!</Notification>,
+                { placement: 'top-center' },
+            )
+        } finally {
+            setIsDeleting(false)
+            setDeleteConfirmationOpen(false)
+            setToDeleteId('')
+        }
     }
 
     const {
@@ -300,6 +322,10 @@ const UserListTable = () => {
                 onRequestClose={handleCancel}
                 onCancel={handleCancel}
                 onConfirm={handleConfirmDelete}
+                confirmButtonProps={{
+                    loading: isDeleting,
+                    disabled: isDeleting
+                }}
             >
                 <p>
                     {' '}
