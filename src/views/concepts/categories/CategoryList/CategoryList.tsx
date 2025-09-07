@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
-import AuthService from '@/services/AuthService'
+import AxiosBase from '@/services/axios/AxiosBase'
 
 // Minimal category type based on API response
 // Fields are optional; we will guard accesses and render fallbacks
@@ -24,15 +23,10 @@ const CategoryList = () => {
             setLoading(true)
             setError(null)
             try {
-                const token = AuthService.getToken()
-                if (!token) {
-                    throw new Error('توکن یافت نشد. لطفاً وارد شوید.')
-                }
-
-                const response = await axios.get('http://api.radif.org/api/categories/all', {
+                // Use AxiosBase with baseURL '/api' to leverage Vite proxy and attach Authorization via interceptor
+                const response = await AxiosBase.get('/categories/all', {
                     headers: {
                         Accept: 'application/json',
-                        Authorization: `Bearer ${token}`,
                     },
                     signal: controller.signal,
                 })
@@ -51,8 +45,10 @@ const CategoryList = () => {
 
                 setCategories((list as Category[]) ?? [])
             } catch (err: any) {
-                if (axios.isCancel(err) || err?.name === 'CanceledError') return
-                const msg = err?.response?.data?.message || err?.message || 'خطای نامشخص هنگام دریافت داده‌ها'
+                if ((err && (err.name === 'CanceledError' || err.code === 'ERR_CANCELED')) || (err?.message || '').includes('canceled')) {
+                    return
+                }
+                const msg = err?.response?.data?.message || err?.message || 'Unknown error while fetching categories'
                 setError(msg)
             } finally {
                 setLoading(false)
@@ -73,7 +69,7 @@ const CategoryList = () => {
     if (loading) {
         return (
             <div className="p-6">
-                <p>در حال بارگذاری دسته‌بندی‌ها...</p>
+                <p>Loading...</p>
             </div>
         )
     }
@@ -81,12 +77,12 @@ const CategoryList = () => {
     if (error) {
         return (
             <div className="p-6 space-y-4">
-                <div className="text-red-600">خطا: {error}</div>
+                <div className="text-red-600">Error: {error}</div>
                 <button
                     className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
                     onClick={() => setReload((n) => n + 1)}
                 >
-                    تلاش مجدد
+                    Retry
                 </button>
             </div>
         )
@@ -95,14 +91,14 @@ const CategoryList = () => {
     if (!categories || categories.length === 0) {
         return (
             <div className="p-6">
-                <p>هیچ دسته‌بندی‌ای یافت نشد</p>
+                <p>No categories found</p>
             </div>
         )
     }
 
     return (
         <div className="p-6">
-            <h1 className="text-xl font-semibold mb-4">لیست دسته‌بندی‌ها</h1>
+            <h1 className="text-xl font-semibold mb-4">Categories</h1>
             <div className="overflow-x-auto border rounded">
                 <table className="min-w-full text-sm">
                     <thead className="bg-gray-50">
