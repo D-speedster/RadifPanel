@@ -7,30 +7,21 @@ export async function apiGetSellerList<T, U extends Record<string, unknown>>(
     params: U,
 ) {
     const response = await ApiService.fetchDataWithAxios<any>({
-        url: '/api/sellers/all',
+        url: '/sellers/all',
         method: 'get',
         params,
     })
     
-    // Transform the response to match the expected format
-    // API returns array directly, but frontend expects {list: [], total: number}
-    let sellerList: any[] = [];
-    if (Array.isArray(response)) {
-        sellerList = response;
-        // ذخیره لیست فروشندگان در کش
-        cachedSellerList = [...response];
+    // Handle real API response format: {message, sellers}
+    if (response?.sellers && Array.isArray(response.sellers)) {
+        cachedSellerList = [...response.sellers];
         return {
-            list: response,
-            total: response.length
+            list: response.sellers,
+            total: response.sellers.length
         } as T
     }
     
-    // اگر پاسخ در قالب مورد انتظار باشد، آن را ذخیره می‌کنیم
-    if (response?.list && Array.isArray(response.list)) {
-        cachedSellerList = [...response.list];
-    }
-    
-    // If response is already in expected format, return as is
+    // Fallback for other formats
     return response as T
 }
 
@@ -63,7 +54,7 @@ export async function apiGetSeller<T, U extends Record<string, unknown>>({
     
     // اگر هنوز فروشنده را پیدا نکردیم، از API درخواست می‌کنیم
     return ApiService.fetchDataWithAxios<T>({
-        url: `/api/sellers/${id}`,
+        url: `/sellers/${id}`,
         method: 'get',
         params,
     })
@@ -86,5 +77,15 @@ export async function apiDeleteSeller<T>(
     return ApiService.fetchDataWithAxios<T>({
         url: `/sellers/${id}`,
         method: 'delete',
+    })
+}
+
+export async function apiCreateSeller<T, U extends Record<string, unknown>>(
+    data: U,
+) {
+    return ApiService.fetchDataWithAxios<T>({
+        url: '/sellers',
+        method: 'post',
+        data,
     })
 }

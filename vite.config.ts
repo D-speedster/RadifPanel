@@ -30,6 +30,36 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path
+      },
+      '/user': {
+        target: 'https://api.radif.org/',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path
+      },
+      '/sign-out': {
+        target: 'https://api.radif.org/',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path
+      },
+      '/register': {
+        target: 'https://api.radif.org/',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path
+      },
+      '/forgot-password': {
+        target: 'https://api.radif.org/',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path
+      },
+      '/reset-password': {
+        target: 'https://api.radif.org/',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path
       }
     }
   },

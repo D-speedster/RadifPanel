@@ -77,19 +77,19 @@ function AuthProvider({ children }: AuthProviderProps) {
     const signIn = async (values: SignInCredential): AuthResult => {
         try {
             const resp = await AuthService.signIn(values)
-            if (resp) {
+            if (resp && (resp as any).token) {
                 // Store the token
-                AuthService.setToken(resp.token)
+                AuthService.setToken((resp as any).token)
                 
                 // Use the user data from sign-in response directly
-                handleSignIn({ accessToken: resp.token }, resp.user)
+                handleSignIn({ accessToken: (resp as any).token }, (resp as any).user)
                 
                 // Try to fetch additional user profile data, but don't block the login flow
                 try {
                     const userResp = await AuthService.getUser()
                     if (userResp) {
                         // Update user with additional profile data if available
-                        setUser({...resp.user, ...userResp})
+                        setUser({...(resp as any).user, ...userResp})
                     }
                 } catch (profileError) {
                     // Silently handle profile fetch errors - we already have basic user data
@@ -104,7 +104,7 @@ function AuthProvider({ children }: AuthProviderProps) {
             }
             return {
                 status: 'failed',
-                message: 'Unable to sign in',
+                message: (resp as any)?.message || 'Unable to sign in',
             }
             // eslint-disable-next-line  @typescript-eslint/no-explicit-any
         } catch (errors: any) {

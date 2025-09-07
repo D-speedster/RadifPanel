@@ -17,9 +17,6 @@ const AuthService = {
             url: endpointConfig.signIn,
             method: 'post',
             data: formData,
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
         });
 
         // Transform API response to match the expected SignInResponse structure

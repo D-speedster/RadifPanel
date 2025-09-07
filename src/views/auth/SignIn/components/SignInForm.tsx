@@ -24,9 +24,11 @@ type SignInFormSchema = {
 }
 
 const validationSchema: ZodType<SignInFormSchema> = z.object({
+    // Treat userName as email for the API
     userName: z
-        .string({ required_error: 'Please enter your username' })
-        .min(1, { message: 'Please enter your username' }),
+        .string({ required_error: 'Please enter your email' })
+        .min(1, { message: 'Please enter your email' })
+        .email({ message: 'Please enter a valid email address' }),
     password: z
         .string({ required_error: 'Please enter your password' })
         .min(1, { message: 'Please enter your password' }),
@@ -43,8 +45,8 @@ const SignInForm = (props: SignInFormProps) => {
         control,
     } = useForm<SignInFormSchema>({
         defaultValues: {
-            userName: 'admin',
-            password: '123Qwe',
+            userName: '',
+            password: '',
         },
         resolver: zodResolver(validationSchema),
     })
@@ -53,8 +55,7 @@ const SignInForm = (props: SignInFormProps) => {
 
     const onSignIn = async (values: SignInFormSchema) => {
         const { userName, password } = values
-        console.log(userName, password)
-
+        
         if (!disableSubmit) {
             setSubmitting(true)
 
@@ -72,7 +73,7 @@ const SignInForm = (props: SignInFormProps) => {
         <div className={className}>
             <Form onSubmit={handleSubmit(onSignIn)}>
                 <FormItem
-                    label="Username"
+                    label="Email"
                     invalid={Boolean(errors.userName)}
                     errorMessage={errors.userName?.message}
                 >
@@ -81,9 +82,9 @@ const SignInForm = (props: SignInFormProps) => {
                         control={control}
                         render={({ field }) => (
                             <Input
-                                type="text"
-                                placeholder="Username"
-                                autoComplete="off"
+                                type="email"
+                                placeholder="Email"
+                                autoComplete="email"
                                 {...field}
                             />
                         )}
@@ -104,9 +105,9 @@ const SignInForm = (props: SignInFormProps) => {
                         rules={{ required: true }}
                         render={({ field }) => (
                             <PasswordInput
-                                type="text"
+                                type="password"
                                 placeholder="Password"
-                                autoComplete="off"
+                                autoComplete="current-password"
                                 {...field}
                             />
                         )}

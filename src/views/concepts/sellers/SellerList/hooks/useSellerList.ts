@@ -16,7 +16,7 @@ const useSellerList = () => {
     } = useSellerListStore((state) => state)
 
     const { data, error, isLoading, mutate } = useSWR(
-        ['/api/sellers/all', { ...tableData, ...filterData }],
+        () => window.location.pathname.includes('/sellers') ? ['/api/sellers/all', { ...tableData, ...filterData }] : null,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([_, params]) => {
             return apiGetSellerList<GetSellerListResponse, TableQueries>(params)
