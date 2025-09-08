@@ -45,6 +45,13 @@ export const protectedRoutes: Routes = [
         component: lazy(() => import('@/views/concepts/products/ProductList/')),
         authority: [],
     },
+    {
+        key: 'productsCreate',
+        path: '/products-Create',
+        component: lazy(() => import('@/views/concepts/products/ProductCreate/')),
+        authority: [],
+    },
+
     // ویرایش محصولات
     {
         key: 'productsEdit',
