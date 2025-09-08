@@ -26,7 +26,7 @@ const mockCategories: Category[] = [
         name: 'الکترونیک',
         slug: 'electronics',
         description: 'محصولات الکترونیکی و دیجیتال',
-        image: '/img/categories/electronics.jpg',
+        image: '',
         parentId: null,
         productCount: 1250,
         isExpanded: true,

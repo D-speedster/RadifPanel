@@ -88,7 +88,7 @@ const CategoryDetails = () => {
         level: 1,
         isActive: true,
         productsCount: 245,
-        image: '/img/categories/electronics.jpg',
+        image: '/src/img/categories/electronics.jpg',
         createdAt: '2024-01-15',
         updatedAt: '2024-01-20',
         metaTitle: 'خرید محصولات الکترونیک | فروشگاه آنلاین',

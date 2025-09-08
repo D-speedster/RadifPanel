@@ -14,7 +14,7 @@ const mockCategories: Category[] = [
         level: 0,
         isActive: true,
         productsCount: 1250,
-        image: '/img/categories/electronics.jpg',
+        image: '',
         createdAt: '2024-01-15T10:00:00Z',
         updatedAt: '2024-01-20T14:30:00Z'
     },
