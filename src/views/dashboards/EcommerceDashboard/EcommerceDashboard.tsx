@@ -1,117 +1,144 @@
-import { Card } from '@/components/ui'
-import { HiOutlineChartBar, HiOutlineUsers, HiOutlineCurrencyDollar, HiOutlineShoppingCart } from 'react-icons/hi'
+import { HiOutlineCurrencyDollar, HiOutlineShoppingCart, HiOutlineUsers, HiOutlineShoppingBag, HiPlus } from 'react-icons/hi'
+import { Button } from '@/components/ui'
+import KeyMetricsCard from './components/KeyMetricsCard'
+import SalesChart from './components/SalesChart'
+import TopProducts from './components/TopProducts'
+import RecentOrders from './components/RecentOrders'
+import NewSellers from './components/NewSellers'
 
 const SalesDashboard = () => {
-    const statsData = [
-        {
-            title: 'کل فروش',
-            value: '۲,۵۰۰,۰۰۰ تومان',
-            icon: <HiOutlineCurrencyDollar className="text-2xl" />,
-            color: 'text-emerald-600',
-            bgColor: 'bg-emerald-100'
-        },
-        {
-            title: 'سفارشات',
-            value: '۳۵۶',
-            icon: <HiOutlineShoppingCart className="text-2xl" />,
-            color: 'text-blue-600',
-            bgColor: 'bg-blue-100'
-        },
-        {
-            title: 'مشتریان',
-            value: '۱,۲۵۰',
-            icon: <HiOutlineUsers className="text-2xl" />,
-            color: 'text-purple-600',
-            bgColor: 'bg-purple-100'
-        },
-        {
-            title: 'آمار بازدید',
-            value: '۸,۹۲۰',
-            icon: <HiOutlineChartBar className="text-2xl" />,
-            color: 'text-orange-600',
-            bgColor: 'bg-orange-100'
-        }
-    ]
 
     return (
-        <div className="p-6">
-            <div className="mb-6">
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">داشبورد فروش</h1>
-                <p className="text-gray-600">خلاصه‌ای از عملکرد فروش و آمار کلی</p>
+        <div 
+            className="min-h-screen" 
+            style={{ 
+                backgroundColor: '#F8F9FC',
+                fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+            }}
+        >
+            {/* هدر مدرن */}
+            <div 
+                className="bg-white" 
+                style={{ 
+                    padding: '2rem 2.5rem',
+                    boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.03)'
+                }}
+            >
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 
+                            className="font-bold mb-2" 
+                            style={{ 
+                                fontSize: '2rem',
+                                color: '#1A202C',
+                                lineHeight: '1.2',
+                                letterSpacing: '-0.025em'
+                            }}
+                        >
+                            نمای کلی
+                        </h1>
+                        <p style={{ 
+                            color: '#A0AEC0', 
+                            fontSize: '0.9rem',
+                            fontWeight: '400'
+                        }}>
+                           خوش آمدید . آماده برسی گزارشات روزانه هستید ؟
+                        </p>
+                    </div>
+                    <Button 
+                        variant="solid" 
+                        size="lg"
+                        className="flex items-center gap-2"
+                        style={{
+                            backgroundColor: '#7A52F4',
+                            color: 'white',
+                            padding: '0.875rem 1.75rem',
+                            borderRadius: '1rem',
+                            fontWeight: '600',
+                            fontSize: '0.9rem',
+                            boxShadow: '0 4px 12px 0 rgb(122 82 244 / 0.3)',
+                            border: 'none'
+                        }}
+                    >
+                        <HiPlus className="text-lg" />
+                        ساخت گزارش
+                    </Button>
+                </div>
             </div>
             
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                {statsData.map((stat, index) => (
-                    <Card key={index} className="p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-gray-600 mb-1">{stat.title}</p>
-                                <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                            </div>
-                            <div className={`p-3 rounded-full ${stat.bgColor} ${stat.color}`}>
-                                {stat.icon}
-                            </div>
-                        </div>
-                    </Card>
-                ))}
-            </div>
-
-            {/* Recent Activity */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="p-6">
-                    <h3 className="text-lg font-semibold mb-4">فعالیت‌های اخیر</h3>
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between py-3 border-b border-gray-100">
-                            <div>
-                                <p className="font-medium">سفارش جدید #۱۰۰۱</p>
-                                <p className="text-sm text-gray-600">علی محمدی - ۱,۲۵۰,۰۰۰ تومان</p>
-                            </div>
-                            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">تکمیل شده</span>
-                        </div>
-                        <div className="flex items-center justify-between py-3 border-b border-gray-100">
-                            <div>
-                                <p className="font-medium">سفارش جدید #۱۰۰۲</p>
-                                <p className="text-sm text-gray-600">سارا احمدی - ۸۵۰,۰۰۰ تومان</p>
-                            </div>
-                            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">در حال پردازش</span>
-                        </div>
-                        <div className="flex items-center justify-between py-3">
-                            <div>
-                                <p className="font-medium">سفارش جدید #۱۰۰۳</p>
-                                <p className="text-sm text-gray-600">محمد رضایی - ۲,۱۰۰,۰۰۰ تومان</p>
-                            </div>
-                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">ارسال شده</span>
-                        </div>
+            <div style={{ padding: '2.5rem' }}>
+                
+                {/* کارت‌های آمار کلیدی */}
+                <div className="grid grid-cols-12" style={{ gap: '2rem', marginBottom: '2.5rem' }}>
+                    <div className="col-span-12 sm:col-span-6 lg:col-span-3">
+                        <KeyMetricsCard
+                            title="مجموع درآمد"
+                            value="$87,450"
+                            description="30 روز گذشته"
+                            change="+12.5%"
+                            icon={<HiOutlineCurrencyDollar className="text-xl" />}
+                            iconBgColor="rgba(52, 211, 153, 0.1)"
+                            iconColor="#34D399"
+                        />
                     </div>
-                </Card>
-
-                <Card className="p-6">
-                    <h3 className="text-lg font-semibold mb-4">محصولات پرفروش</h3>
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between py-3 border-b border-gray-100">
-                            <div>
-                                <p className="font-medium">لپ تاپ ایسوس</p>
-                                <p className="text-sm text-gray-600">۱۲ فروش این ماه</p>
-                            </div>
-                            <span className="text-sm font-semibold text-gray-900">۵,۲۳۰,۰۰۰ تومان</span>
-                        </div>
-                        <div className="flex items-center justify-between py-3 border-b border-gray-100">
-                            <div>
-                                <p className="font-medium">گوشی سامسونگ</p>
-                                <p className="text-sm text-gray-600">۸ فروش این ماه</p>
-                            </div>
-                            <span className="text-sm font-semibold text-gray-900">۴,۳۲۰,۰۰۰ تومان</span>
-                        </div>
-                        <div className="flex items-center justify-between py-3">
-                            <div>
-                                <p className="font-medium">هدفون بلوتوث</p>
-                                <p className="text-sm text-gray-600">۱۵ فروش این ماه</p>
-                            </div>
-                            <span className="text-sm font-semibold text-gray-900">۳,۲۰۰,۰۰۰ تومان</span>
-                        </div>
+                    <div className="col-span-12 sm:col-span-6 lg:col-span-3">
+                        <KeyMetricsCard
+                            title="سفارشات جدید"
+                            value="240"
+                            description="30 روز گذشته"
+                            change="+8.2%"
+                            icon={<HiOutlineShoppingCart className="text-xl" />}
+                            iconBgColor="rgba(122, 82, 244, 0.1)"
+                            iconColor="#7A52F4"
+                        />
                     </div>
-                </Card>
+                    <div className="col-span-12 sm:col-span-6 lg:col-span-3">
+                        <KeyMetricsCard
+                            title="یوزر جدید"
+                            value="430"
+                            description="30 روز گذشته"
+                            change="+32.5%"
+                            icon={<HiOutlineUsers className="text-xl" />}
+                            iconBgColor="rgba(251, 191, 36, 0.1)"
+                            iconColor="#FBBF24"
+                        />
+                    </div>
+                    <div className="col-span-12 sm:col-span-6 lg:col-span-3">
+                        <KeyMetricsCard
+                            title="فروشندگان فعال"
+                            value="222"
+                            description="30 روز گذشته"
+                            change="+5.1%"
+                            icon={<HiOutlineShoppingBag className="text-xl" />}
+                            iconBgColor="rgba(248, 113, 113, 0.1)"
+                            iconColor="#F87171"
+                        />
+                    </div>
+                </div>
+
+                {/* نمودار و محصولات */}
+                <div className="grid grid-cols-12" style={{ gap: '2rem', marginBottom: '2.5rem' }}>
+                    {/* نمودار فروش */}
+                    <div className="col-span-12 lg:col-span-8">
+                        <SalesChart />
+                    </div>
+                    {/* پرفروش‌ترین محصولات */}
+                    <div className="col-span-12 lg:col-span-4">
+                        <TopProducts />
+                    </div>
+                </div>
+
+                {/* جداول داده‌ها */}
+                <div className="grid grid-cols-12" style={{ gap: '2rem' }}>
+                    {/* آخرین سفارشات */}
+                    <div className="col-span-12 lg:col-span-7">
+                        <RecentOrders />
+                    </div>
+                    {/* کاربران جدید */}
+                    <div className="col-span-12 lg:col-span-5">
+                        <NewSellers />
+                    </div>
+                </div>
             </div>
         </div>
     )
