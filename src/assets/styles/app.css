@@ -4,3 +4,16 @@
 @import './template/index.css';
 @import './others/index.css';
 @import './vendors/index.css';
+
+/* Custom Kook Font */
+@font-face {
+  font-family: 'Kook';
+  src: url('/fonts/kook/Kook-ExtraBold.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+}
+
+/* Set Kook as default font for the entire application */
+body {
+  font-family: 'Kook', sans-serif;
+}

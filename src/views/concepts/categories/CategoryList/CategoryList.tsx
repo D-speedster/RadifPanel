@@ -160,12 +160,17 @@ const CategoryList = () => {
         setSelectedCategory(null)
     }
 
+    const handleReorder = (reorderedCategories: Category[]) => {
+        setCategories(reorderedCategories)
+        console.log('Categories reordered:', reorderedCategories)
+    }
+
     return (
         <div 
             className="min-h-screen" 
             style={{ 
                 backgroundColor: '#F8F9FC',
-                fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                fontFamily: 'kook'
             }}
         >
             {/* هدر صفحه */}
@@ -226,6 +231,7 @@ const CategoryList = () => {
                     categories={categories}
                     onEdit={handleEditCategory}
                     onDelete={handleDeleteCategory}
+                    onReorder={handleReorder}
                 />
             </div>
 
