@@ -19,7 +19,7 @@ const UserListActionTools = () => {
             <Button
                 variant="solid"
                 icon={<TbPlus className="text-xl" />}
-                onClick={() => navigate('/concepts/users/user-create')}
+                onClick={() => navigate('/users/newUser')}
             >
                 اضافه کردن کاربر
             </Button>
