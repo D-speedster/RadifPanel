@@ -19,12 +19,12 @@ export type ThemeConfig = {
  */
 export const themeConfig: ThemeConfig = {
     themeSchema: '',
-    direction: THEME_ENUM.DIR_RTL,
-    mode: THEME_ENUM.MODE_LIGHT,
-    panelExpand: false,
-    controlSize: 'md',
+    direction: THEME_ENUM.DIR_RTL, // تغییر از RTL به LTR برای تست
+    mode: THEME_ENUM.MODE_LIGHT, // تغییر از LIGHT به DARK برای تست
+    panelExpand: true, // تغییر از false به true برای تست
+    controlSize: 'lg', // تغییر از md به lg برای تست
     layout: {
-        type: THEME_ENUM.LAYOUT_COLLAPSIBLE_SIDE,
-        sideNavCollapse: false,
+        type: THEME_ENUM.LAYOUT_COLLAPSIBLE_SIDE, // تغییر چیدمان از collapsibleSide به topBarClassic
+        sideNavCollapse: true, // تغییر از false به true
     },
 }
