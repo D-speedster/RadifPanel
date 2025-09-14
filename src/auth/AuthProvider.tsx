@@ -1,4 +1,4 @@
-import { useRef, useImperativeHandle, useState } from 'react'
+import { useRef, useImperativeHandle, useState, useEffect } from 'react'
 import AuthContext from './AuthContext'
 import appConfig from '@/configs/app.config'
 import { useSessionUser, useToken } from '@/store/authStore'
@@ -15,6 +15,8 @@ import type {
 } from '@/@types/auth'
 import type { ReactNode, Ref } from 'react'
 import type { NavigateFunction } from 'react-router'
+import { useThemeStore } from '@/store/themeStore'
+import { ADMIN, OPERATOR, SELLER } from '@/constants/roles.constant'
 
 type AuthProviderProps = { children: ReactNode }
 
@@ -34,6 +36,14 @@ const IsolatedNavigator = ({ ref }: { ref: Ref<IsolatedNavigatorRef> }) => {
     return <></>
 }
 
+// Map user authority to a preset theme schema key
+const getThemeForAuthority = (authority: string[] = []) => {
+    if (authority.includes(ADMIN)) return 'purple'
+    if (authority.includes(OPERATOR)) return 'green'
+    if (authority.includes(SELLER)) return 'orange'
+    return 'default'
+}
+
 function AuthProvider({ children }: AuthProviderProps) {
     const signedIn = useSessionUser((state) => state.session.signedIn)
     const user = useSessionUser((state) => state.user)
@@ -43,6 +53,13 @@ function AuthProvider({ children }: AuthProviderProps) {
     )
     const { token, setToken } = useToken()
     const [tokenState, setTokenState] = useState(token)
+
+    // Apply role-based theme schema whenever user authority changes
+    const setSchema = useThemeStore((state) => state.setSchema)
+    useEffect(() => {
+        const schema = getThemeForAuthority((user as any)?.authority || [])
+        setSchema(schema)
+    }, [user?.authority, setSchema])
 
     const authenticated = Boolean(tokenState && signedIn)
 

@@ -2,7 +2,7 @@ import { lazy } from 'react'
 import authRoute from './authRoute'
 import othersRoute from './othersRoute'
 import type { Routes } from '@/@types/routes'
-import { OPERATOR } from '@/constants/roles.constant'
+import { ADMIN, OPERATOR, SELLER } from '@/constants/roles.constant'
 
 export const publicRoutes: Routes = [...authRoute]
 
@@ -18,38 +18,38 @@ export const protectedRoutes: Routes = [
         key: 'categories',
         path: '/categories',
         component: lazy(() => import('@/views/concepts/categories')),
-        authority: [],
+        authority: [ADMIN, OPERATOR, SELLER],
     },
     {
         key: 'categoryDetails',
         path: '/categories/:id',
         component: lazy(() => import('@/views/concepts/categories/CategoryDetails')),
-        authority: [],
+        authority: [ADMIN, OPERATOR, SELLER],
     },
     {
         key: 'categoryEdit',
         path: '/categories/:id/edit',
         component: lazy(() => import('@/views/concepts/categories/CategoryForm')),
-        authority: [],
+        authority: [ADMIN, OPERATOR, SELLER],
     },
     {
         key: 'categoryCreate',
         path: '/categories/new',
         component: lazy(() => import('@/views/concepts/categories/CategoryForm')),
-        authority: [],
+        authority: [ADMIN, OPERATOR, SELLER],
     },
     // لیست محصولات
     {
         key: 'productsList',
         path: '/products-list',
         component: lazy(() => import('@/views/concepts/products/ProductList/')),
-        authority: [],
+        authority: [ADMIN, OPERATOR, SELLER],
     },
     {
         key: 'productsCreate',
         path: '/products-Create',
         component: lazy(() => import('@/views/concepts/products/ProductCreate/')),
-        authority: [],
+        authority: [ADMIN, OPERATOR, SELLER],
     },
 
     // ویرایش محصولات
@@ -57,7 +57,7 @@ export const protectedRoutes: Routes = [
         key: 'productsEdit',
         path: '/products-list/product/:id/edit',
         component: lazy(() => import('@/views/concepts/products/ProductEdit').then(module => ({ default: module.ProductEdit }))),
-        authority: [],
+        authority: [ADMIN, OPERATOR, SELLER],
     },
     // دسته بندی محصولات
     {
@@ -71,52 +71,52 @@ export const protectedRoutes: Routes = [
         key: 'registrationChart',
         path: '/stats/registration-chart',
         component: lazy(() => import('@/views/dashboards/AnalyticDashboard')),
-        authority: [],
+        authority: [ADMIN, OPERATOR],
     },
     // نمودار فروش اشتراک
     {
         key: 'subscriptionChart',
         path: '/stats/subscription-chart',
         component: lazy(() => import('@/views/demo/GroupCollapseMenuItemView2')),
-        authority: [],
+        authority: [ADMIN, OPERATOR],
     },
     // نمودار بازدید
     {
         key: 'visitChart',
         path: '/stats/visit-chart',
         component: lazy(() => import('@/views/demo/GroupCollapseMenuItemView2')),
-        authority: [],
+        authority: [ADMIN, OPERATOR],
     },
     // لیست کاربران
     {
         key: 'usersList',
         path: '/users-list',
         component: lazy(() => import('@/views/concepts/users/UserList')),
-        authority: [],
+        authority: [ADMIN],
     },
     {
         key: 'newUser',
         path: '/users/newUser',
         component: lazy(() => import('@/views/concepts/users/UserCreate')),
-        authority: [],
+        authority: [ADMIN],
     },
     {
         key: 'userEdit',
         path: '/concepts/users/user-edit/:id',
         component: lazy(() => import('@/views/concepts/users/UserEdit')),
-        authority: [],
+        authority: [ADMIN],
     },
     {
         key: 'sellers',
         path: '/sellers',
         component: lazy(() => import('@/views/concepts/sellers/SellerList')),
-        authority: [],
+        authority: [ADMIN, OPERATOR],
     },
     {
         key: 'sellersEdit',
         path: '/sellers/edit/:id',
         component: lazy(() => import('@/views/concepts/sellers/SellerEdit')),
-        authority: [],
+        authority: [ADMIN, OPERATOR],
     },
     {
         key: 'seller-details',
@@ -124,7 +124,7 @@ export const protectedRoutes: Routes = [
         component: lazy(
             () => import('@/views/concepts/sellers/SellerDetails/SellerDetails'),
         ),
-        authority: [],
+        authority: [ADMIN, OPERATOR],
     },
     {
         key: 'manageSellers',
@@ -132,20 +132,20 @@ export const protectedRoutes: Routes = [
         component: lazy(
             () => import('@/views/demo/GroupCollapseMenuItemView2'),
         ),
-        authority: [],
+        authority: [ADMIN],
     },
     // سایت ها
     {
         key: 'websites',
         path: '/websites',
         component: lazy(() => import('@/views/concepts/websites/weblist')),
-        authority: [],
+        authority: [ADMIN, OPERATOR],
     },
     {
         key: 'websiteEdit',
         path: '/websites/:id/edit',
         component: lazy(() => import('@/views/concepts/websites/WebsiteEdit')),
-        authority: [],
+        authority: [ADMIN, OPERATOR],
     },
 
     // سرویس کرالر (مانیتورینگ)
@@ -155,7 +155,7 @@ export const protectedRoutes: Routes = [
         component: lazy(
             () => import('@/views/concepts/Crawling'),
         ),
-        authority: [],
+        authority: [ADMIN, OPERATOR],
     },
     // تست سلامت (مانیتورینگ)
     {
@@ -164,7 +164,7 @@ export const protectedRoutes: Routes = [
         component: lazy(
             () => import('@/views/concepts/monitoring/HealthTest'),
         ),
-        authority: [],
+        authority: [ADMIN, OPERATOR],
     },
     // تنظیمات کرالر
     {
@@ -173,7 +173,7 @@ export const protectedRoutes: Routes = [
         component: lazy(
             () => import('@/views/settings/CrawlerSettings'),
         ),
-        authority: [],
+        authority: [ADMIN, OPERATOR],
     },
     // تنظیمات سایت
     {
@@ -182,7 +182,7 @@ export const protectedRoutes: Routes = [
         component: lazy(
             () => import('@/views/settings/WebsiteSettings'),
         ),
-        authority: [],
+        authority: [ADMIN],
     },
     ...othersRoute,
 ]

@@ -36,7 +36,7 @@ const navigationConfig: NavigationTree[] = [
         translateKey: 'nav.sellers.title',
         icon: 'seller',
         type: NAV_ITEM_TYPE_ITEM,
-        authority: [],
+        authority: [ADMIN, OPERATOR],
         subMenu: [],
     },
     {
@@ -46,7 +46,7 @@ const navigationConfig: NavigationTree[] = [
         translateKey: 'nav.categories.title',
         icon: 'category',
         type: NAV_ITEM_TYPE_ITEM,
-        authority: [],
+        authority: [ADMIN, OPERATOR, SELLER],
         subMenu: [],
     },
     {
@@ -56,7 +56,7 @@ const navigationConfig: NavigationTree[] = [
         translateKey: 'nav.categories.title',
         icon: 'product',
         type: NAV_ITEM_TYPE_ITEM,
-        authority: [],
+        authority: [ADMIN, OPERATOR, SELLER],
         subMenu: [],
     },
     {
@@ -66,7 +66,7 @@ const navigationConfig: NavigationTree[] = [
         translateKey: 'nav.websites.title',
         icon: 'website',
         type: NAV_ITEM_TYPE_ITEM,
-        authority: [],
+        authority: [ADMIN, OPERATOR],
         subMenu: [],
     },
 
@@ -128,7 +128,7 @@ const navigationConfig: NavigationTree[] = [
                 translateKey: 'nav.monitoring.crawlerService',
                 icon: 'crawler',
                 type: NAV_ITEM_TYPE_ITEM,
-                authority: [],
+                authority: [ADMIN, OPERATOR],
                 subMenu: [],
             },
             {
@@ -138,7 +138,7 @@ const navigationConfig: NavigationTree[] = [
                 translateKey: 'nav.monitoring.healthTest',
                 icon: 'health',
                 type: NAV_ITEM_TYPE_ITEM,
-                authority: [],
+                authority: [ADMIN, OPERATOR],
                 subMenu: [],
             }
 
@@ -151,7 +151,7 @@ const navigationConfig: NavigationTree[] = [
         translateKey: 'nav.users.title',
         icon: 'users',
         type: NAV_ITEM_TYPE_COLLAPSE,
-        authority: [],
+        authority: [ADMIN],
         subMenu: [
             {
                 key: 'usersList',
@@ -160,7 +160,7 @@ const navigationConfig: NavigationTree[] = [
                 translateKey: 'nav.users.usersList',
                 icon: 'users',
                 type: NAV_ITEM_TYPE_ITEM,
-                authority: [],
+                authority: [ADMIN],
                 subMenu: [],
             },
             {
@@ -170,7 +170,7 @@ const navigationConfig: NavigationTree[] = [
                 translateKey: 'nav.users.newUser',
                 icon: 'users',
                 type: NAV_ITEM_TYPE_ITEM,
-                authority: [],
+                authority: [ADMIN],
                 subMenu: [],
             },
 
@@ -192,7 +192,7 @@ const navigationConfig: NavigationTree[] = [
                 translateKey: 'nav.settings.crawler',
                 icon: 'crawler',
                 type: NAV_ITEM_TYPE_ITEM,
-                authority: [],
+                authority: [ADMIN, OPERATOR],
                 subMenu: [],
             },
             {
@@ -202,7 +202,7 @@ const navigationConfig: NavigationTree[] = [
                 translateKey: 'nav.settings.website',
                 icon: 'website',
                 type: NAV_ITEM_TYPE_ITEM,
-                authority: [],
+                authority: [ADMIN],
                 subMenu: [],
             },
         ],

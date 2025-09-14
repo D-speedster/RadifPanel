@@ -18,7 +18,7 @@ export type ThemeConfig = {
  * we recommend to use the configuration that generated from demo.
  */
 export const themeConfig: ThemeConfig = {
-    themeSchema: '',
+    themeSchema: 'default',
     direction: THEME_ENUM.DIR_RTL, // تغییر از RTL به LTR برای تست
     mode: THEME_ENUM.MODE_LIGHT, // تغییر از LIGHT به DARK برای تست
     panelExpand: true, // تغییر از false به true برای تست
