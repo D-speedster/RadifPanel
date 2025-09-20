@@ -19,7 +19,7 @@ const SellerListActionTools = () => {
             <Button
                 variant="solid"
                 icon={<TbPlus className="text-xl" />}
-                onClick={() => navigate('/concepts/sellers/seller-create')}
+                onClick={() => navigate('/sellers-create')}
             >
                 اضافه کردن فروشنده
             </Button>

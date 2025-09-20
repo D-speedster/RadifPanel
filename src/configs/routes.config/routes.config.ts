@@ -113,6 +113,12 @@ export const protectedRoutes: Routes = [
         authority: [ADMIN, OPERATOR],
     },
     {
+        key: 'sellersCreate',
+        path: '/sellers-create',
+        component: lazy(() => import('@/views/concepts/sellers/SellerCreate')),
+        authority: [ADMIN, OPERATOR],
+    },
+    {
         key: 'sellersEdit',
         path: '/sellers/edit/:id',
         component: lazy(() => import('@/views/concepts/sellers/SellerEdit')),
