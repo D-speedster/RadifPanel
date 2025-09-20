@@ -201,15 +201,7 @@ const CategoriesTable = ({ categories, onEdit, onDelete, onReorder }: Categories
     }
 
     return (
-        <Card 
-            className="bg-white"
-            style={{
-                padding: '1.75rem',
-                borderRadius: '1rem',
-                boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05)',
-                border: 'none'
-            }}
-        >
+        <Card className="p-7">
             <div className="overflow-x-auto">
                 <DragDropContext onDragEnd={handleDragEnd}>
                     <table className="w-full">

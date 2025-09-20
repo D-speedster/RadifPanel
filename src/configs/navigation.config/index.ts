@@ -3,7 +3,7 @@ import {
     NAV_ITEM_TYPE_ITEM,
     NAV_ITEM_TYPE_COLLAPSE,
 } from '@/constants/navigation.constant'
-import { ADMIN, OPERATOR, SELLER, USER } from '@/constants/roles.constant'
+import { ADMIN, OPERATOR, SELLER, USER, SUPER_ADMIN } from '@/constants/roles.constant'
 
 import type { NavigationTree } from '@/@types/navigation'
 
@@ -202,7 +202,7 @@ const navigationConfig: NavigationTree[] = [
                 translateKey: 'nav.settings.website',
                 icon: 'website',
                 type: NAV_ITEM_TYPE_ITEM,
-                authority: [ADMIN],
+                authority: [SUPER_ADMIN],
                 subMenu: [],
             },
         ],

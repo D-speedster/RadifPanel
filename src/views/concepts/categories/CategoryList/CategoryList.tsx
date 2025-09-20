@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui'
 import { HiPlus, HiPencil, HiTrash, HiChevronRight, HiChevronDown } from 'react-icons/hi'
+import Container from '@/components/shared/Container'
+import AdaptiveCard from '@/components/shared/AdaptiveCard'
 import CategoriesTable from './components/CategoriesTable'
 import CategoryModal from './components/CategoryModal'
 import ConfirmationDialog from './components/ConfirmationDialog'
@@ -166,74 +168,39 @@ const CategoryList = () => {
     }
 
     return (
-        <div 
-            className="min-h-screen" 
-            style={{ 
-                backgroundColor: '#F8F9FC',
-                fontFamily: 'kook'
-            }}
-        >
-            {/* هدر صفحه */}
-            <div 
-                className="bg-white" 
-                style={{ 
-                    padding: '2rem 2.5rem',
-                    boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.03)',
-                    borderBottom: '1px solid #E2E8F0'
-                }}
-            >
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 
-                            className="font-bold mb-2" 
-                            style={{ 
-                                fontSize: '2rem',
-                                color: '#1A202C',
-                                lineHeight: '1.2',
-                                letterSpacing: '-0.025em'
-                            }}
+        <Container>
+            <AdaptiveCard>
+                <div className="flex flex-col gap-6">
+                    {/* هدر صفحه */}
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                                دسته‌بندی محصولات
+                            </h1>
+                            <p className="text-gray-600 dark:text-gray-400">
+                                مدیریت و سازماندهی دسته‌بندی‌های فروشگاه
+                            </p>
+                        </div>
+                        <Button 
+                            variant="solid" 
+                            size="sm"
+                            icon={<HiPlus />}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                            onClick={handleAddCategory}
                         >
-                            دسته‌بندی محصولات
-                        </h1>
-                        <p style={{ 
-                            color: '#A0AEC0', 
-                            fontSize: '0.9rem',
-                            fontWeight: '400'
-                        }}>
-                            مدیریت و سازماندهی دسته‌بندی‌های فروشگاه
-                        </p>
+                            افزودن دسته‌بندی جدید
+                        </Button>
                     </div>
-                    <Button 
-                        variant="solid" 
-                        size="lg"
-                        className="flex items-center gap-2"
-                        style={{
-                            backgroundColor: '#7A52F4',
-                            color: 'white',
-                            padding: '0.875rem 1.75rem',
-                            borderRadius: '1rem',
-                            fontWeight: '600',
-                            fontSize: '0.9rem',
-                            boxShadow: '0 4px 12px 0 rgb(122 82 244 / 0.3)',
-                            border: 'none'
-                        }}
-                        onClick={handleAddCategory}
-                    >
-                        <HiPlus className="text-lg" />
-                        افزودن دسته‌بندی جدید
-                    </Button>
+                    
+                    {/* محتوای اصلی */}
+                    <CategoriesTable 
+                        categories={categories}
+                        onEdit={handleEditCategory}
+                        onDelete={handleDeleteCategory}
+                        onReorder={handleReorder}
+                    />
                 </div>
-            </div>
-            
-            {/* محتوای اصلی */}
-            <div style={{ padding: '2.5rem' }}>
-                <CategoriesTable 
-                    categories={categories}
-                    onEdit={handleEditCategory}
-                    onDelete={handleDeleteCategory}
-                    onReorder={handleReorder}
-                />
-            </div>
+            </AdaptiveCard>
 
             {/* مودال افزودن/ویرایش */}
             <CategoryModal
@@ -252,7 +219,7 @@ const CategoryList = () => {
                 onConfirm={confirmDelete}
                 onCancel={() => setIsDeleteDialogOpen(false)}
             />
-        </div>
+        </Container>
     )
 }
 

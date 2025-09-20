@@ -12,6 +12,9 @@ import { isOnline, getErrorMessage, addNetworkStatusListener } from '@/utils/net
 import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
 import type { Product } from '../types'
 import type { TableQueries } from '@/@types/common'
+import toast from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
+import { apiDeleteProduct } from '@/services/ProductService'
 
 const ProductColumn = ({ row }: { row: Product }) => {
    
@@ -66,6 +69,7 @@ const ProductListTable = () => {
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
     const [toDeleteId, setToDeleteId] = useState('')
     const [networkStatus, setNetworkStatus] = useState(isOnline())
+    const [isDeleting, setIsDeleting] = useState(false)
 
     // Network status monitoring
     useEffect(() => {
@@ -86,20 +90,37 @@ const ProductListTable = () => {
         navigate(`/products-list/product/${product.id}/edit`)
     }
 
-    const handleConfirmDelete = () => {
-        const newProductList = productList.filter((product) => {
-            return !(toDeleteId === product.id)
-        })
-        setSelectAllProduct([])
-        mutate(
-            {
-                list: newProductList,
-                total: productListTotal - selectedProduct.length,
-            },
-            false,
-        )
-        setDeleteConfirmationOpen(false)
-        setToDeleteId('')
+    const handleConfirmDelete = async () => {
+        if (!toDeleteId) return
+        try {
+            setIsDeleting(true)
+            await apiDeleteProduct<void>(toDeleteId)
+
+            const newProductList = productList.filter((product) => product.id !== toDeleteId)
+            setSelectAllProduct([])
+            mutate(
+                {
+                    list: newProductList,
+                    total: Math.max(0, productListTotal - 1),
+                },
+                false,
+            )
+
+            toast.push(
+                <Notification title="محصول با موفقیت حذف شد" type="success" />, 
+                { placement: 'top-center' }
+            )
+        } catch (error) {
+            console.error('Error deleting product:', error)
+            toast.push(
+                <Notification title="خطا در حذف محصول" type="danger" />, 
+                { placement: 'top-center' }
+            )
+        } finally {
+            setIsDeleting(false)
+            setDeleteConfirmationOpen(false)
+            setToDeleteId('')
+        }
     }
 
     const {
@@ -300,6 +321,7 @@ const ProductListTable = () => {
                 onRequestClose={handleCancel}
                 onCancel={handleCancel}
                 onConfirm={handleConfirmDelete}
+                confirmButtonProps={{ loading: isDeleting, disabled: isDeleting }}
             >
                 <p>
                     {' '}

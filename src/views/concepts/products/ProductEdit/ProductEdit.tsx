@@ -12,28 +12,46 @@ import ProductForm from './ProductForm'
 import { useState } from 'react'
 import type { ProductFormSchema } from './types'
 import type { Product } from '../ProductList/types'
+import type { ProductColumn } from '../ProductList/types'
+
+// A flexible product type that supports both legacy and new API shapes
+type ApiProduct = Product & Partial<ProductColumn> & {
+    title?: string
+    slug?: string
+    image?: string
+}
 
 const ProductEdit = () => {
     const navigate = useNavigate()
     const { id } = useParams<{ id: string }>()
     const formRef = useRef<HTMLFormElement>(null)
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
 
-    const { data: productData, mutate } = useSWR(
+    const { data: productData, mutate } = useSWR<ApiProduct>(
         id ? [`/api/products/${id}`, { id }] : null,
-        ([, params]) => apiGetProduct<Product>(params),
+        ([, params]) => apiGetProduct<ApiProduct>(params),
         {
             revalidateOnFocus: false,
             revalidateOnReconnect: false,
         },
     )
 
+    // Unwrap API response if it comes as { product: {...} }
+    const product: any = (productData as any)?.product ?? productData
+
     const onFormSubmit = async (values: ProductFormSchema) => {
         if (!id) return
 
         try {
             await sleep(800)
-            await apiUpdateProduct(id, values)
+            // Map form fields to API payload shape
+            const payload = {
+                title: values.name,
+                slug: values.productCode,
+                image: values.img ?? '',
+            }
+            await apiUpdateProduct(id, payload)
             mutate()
             toast.push(
                 <Notification
@@ -62,6 +80,7 @@ const ProductEdit = () => {
         if (!id) return
 
         try {
+            setIsDeleting(true)
             await apiDeleteProduct(id)
             toast.push(
                 <Notification
@@ -84,8 +103,10 @@ const ProductEdit = () => {
                     placement: 'top-center',
                 },
             )
+        } finally {
+            setIsDeleting(false)
+            setConfirmDialogOpen(false)
         }
-        setConfirmDialogOpen(false)
     }
 
     const handleDelete = () => {
@@ -112,21 +133,21 @@ const ProductEdit = () => {
                 <div className="flex flex-col h-full">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-2xl font-bold">
-                            {productData ? `ویرایش محصول: ${productData.name}` : 'ویرایش محصول'}
+                            {product ? `ویرایش محصول: ${product.name || product.title}` : 'ویرایش محصول'}
                         </h3>
                     </div>
                     <div className="flex-1">
-                        {productData && (
+                        {product && (
                             <ProductForm
                                 ref={formRef}
                                 defaultValues={{
-                                    name: productData.name || '',
-                                    productCode: productData.productCode || '',
-                                    category: productData.category || '',
-                                    price: productData.price || 0,
-                                    stock: productData.stock || 0,
-                                    status: productData.status || 1,
-                                    img: productData.img || '',
+                                    name: product.name || product.title || '',
+                                    productCode: product.productCode || product.slug || '',
+                                    category: (product as any).category || '',
+                                    price: (product as any).price || 0,
+                                    stock: (product as any).stock || 0,
+                                    status: (product as any).status || 1,
+                                    img: product.img || product.image || '',
                                 }}
                                 onFormSubmit={onFormSubmit}
                             />
@@ -172,6 +193,7 @@ const ProductEdit = () => {
                 onRequestClose={handleCancel}
                 onCancel={handleCancel}
                 onConfirm={handleConfirmDelete}
+                confirmButtonProps={{ loading: isDeleting, disabled: isDeleting }}
             >
                 <p>
                     آیا مطمئن هستید که می‌خواهید این محصول را حذف کنید؟ این عمل قابل بازگشت نیست.

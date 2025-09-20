@@ -16,7 +16,7 @@ import type {
 import type { ReactNode, Ref } from 'react'
 import type { NavigateFunction } from 'react-router'
 import { useThemeStore } from '@/store/themeStore'
-import { ADMIN, OPERATOR, SELLER } from '@/constants/roles.constant'
+import { ADMIN, OPERATOR, SELLER, SUPER_ADMIN } from '@/constants/roles.constant'
 
 type AuthProviderProps = { children: ReactNode }
 
@@ -38,6 +38,7 @@ const IsolatedNavigator = ({ ref }: { ref: Ref<IsolatedNavigatorRef> }) => {
 
 // Map user authority to a preset theme schema key
 const getThemeForAuthority = (authority: string[] = []) => {
+    if (authority.includes(SUPER_ADMIN)) return 'purple'
     if (authority.includes(ADMIN)) return 'purple'
     if (authority.includes(OPERATOR)) return 'green'
     if (authority.includes(SELLER)) return 'orange'
@@ -64,6 +65,26 @@ function AuthProvider({ children }: AuthProviderProps) {
     const authenticated = Boolean(tokenState && signedIn)
 
     const navigatorRef = useRef<IsolatedNavigatorRef>(null)
+
+    // Bootstrap on app load: if token exists but session not marked signed in, fetch user profile
+    useEffect(() => {
+        const bootstrap = async () => {
+            if (tokenState && !signedIn) {
+                try {
+                    const profile = await AuthService.getUser()
+                    if (profile) {
+                        setUser(profile)
+                        setSessionSignedIn(true)
+                    }
+                } catch (e) {
+                    // Invalid token or network issue; ensure sign-out state
+                    handleSignOut()
+                }
+            }
+        }
+        bootstrap()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [tokenState, signedIn])
 
     const redirect = () => {
         const search = window.location.search

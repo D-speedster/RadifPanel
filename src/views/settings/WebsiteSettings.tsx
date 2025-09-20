@@ -15,6 +15,7 @@ import {
     Tabs
 } from '@/components/ui'
 import { Option } from '@/components/ui/Select'
+import ApiService from '@/services/ApiService'
 import {
     HiOutlineArrowLeft,
     HiOutlineSave,
@@ -86,6 +87,7 @@ interface WebsiteSettings {
 const WebsiteSettings = () => {
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
+    const [saving, setSaving] = useState(false)
     const [activeTab, setActiveTab] = useState('general')
     
     const [settings, setSettings] = useState<WebsiteSettings>({
@@ -145,6 +147,29 @@ const WebsiteSettings = () => {
     const [logoPreview, setLogoPreview] = useState<string>('')
     const [faviconPreview, setFaviconPreview] = useState<string>('')
     
+    useEffect(() => {
+        const fetchSettings = async () => {
+            setLoading(true)
+            try {
+                const resp: any = await ApiService.fetchDataWithAxios({
+                    url: '/setting/website',
+                    method: 'get',
+                    headers: { Accept: 'application/json' },
+                })
+                setSettings(prev => ({ ...prev, ...(resp?.settings || resp || {}) }))
+            } catch (e: any) {
+                toast.push(
+                    <Notification title="خطا" type="danger">
+                        بارگیری تنظیمات با خطا مواجه شد
+                    </Notification>
+                )
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchSettings()
+    }, [])
+    
     const handleInputChange = (field: keyof WebsiteSettings, value: any) => {
         setSettings(prev => ({
             ...prev,
@@ -181,24 +206,27 @@ const WebsiteSettings = () => {
     }
     
     const handleSave = async () => {
-        setLoading(true)
+        setSaving(true)
         try {
-            // شبیه‌سازی ذخیره تنظیمات
-            await new Promise(resolve => setTimeout(resolve, 1500))
-            
+            await ApiService.fetchDataWithAxios({
+                url: '/setting/website',
+                method: 'post',
+                data: settings,
+                headers: { 'Content-Type': 'application/json' },
+            })
             toast.push(
-                <Notification title="موفقیت" type="success">
-                    تنظیمات وب‌سایت با موفقیت ذخیره شد
+                <Notification title="موفق" type="success">
+                    تنظیمات با موفقیت ذخیره شد
                 </Notification>
             )
-        } catch (error) {
+        } catch (e: any) {
             toast.push(
                 <Notification title="خطا" type="danger">
-                    خطا در ذخیره تنظیمات
+                    ذخیره تنظیمات با خطا مواجه شد
                 </Notification>
             )
         } finally {
-            setLoading(false)
+            setSaving(false)
         }
     }
     
@@ -289,7 +317,7 @@ const WebsiteSettings = () => {
                             <Button
                                 variant="solid"
                                 onClick={handleSave}
-                                loading={loading}
+                                loading={saving}
                                 icon={<HiOutlineSave />}
                             >
                                 ذخیره تنظیمات

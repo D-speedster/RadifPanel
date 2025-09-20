@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import isEmpty from 'lodash/isEmpty'
-import { ADMIN, OPERATOR, SELLER, USER } from '@/constants/roles.constant'
+import { ADMIN, OPERATOR, SELLER, USER, SUPER_ADMIN } from '@/constants/roles.constant'
 
 function useAuthority(
     userAuthority: string[] = [],
@@ -8,6 +8,10 @@ function useAuthority(
     emptyCheck = false,
 ) {
     const roleMatched = useMemo(() => {
+        // Super Admin has access to everything
+        if (userAuthority.includes(SUPER_ADMIN)) {
+            return true
+        }
         // Admin has access to everything
         if (userAuthority.includes(ADMIN)) {
             return true

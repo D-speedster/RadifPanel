@@ -2,7 +2,7 @@ import { lazy } from 'react'
 import authRoute from './authRoute'
 import othersRoute from './othersRoute'
 import type { Routes } from '@/@types/routes'
-import { ADMIN, OPERATOR, SELLER } from '@/constants/roles.constant'
+import { ADMIN, OPERATOR, SELLER, SUPER_ADMIN } from '@/constants/roles.constant'
 
 export const publicRoutes: Routes = [...authRoute]
 
@@ -182,7 +182,7 @@ export const protectedRoutes: Routes = [
         component: lazy(
             () => import('@/views/settings/WebsiteSettings'),
         ),
-        authority: [ADMIN],
+        authority: [SUPER_ADMIN],
     },
     ...othersRoute,
 ]
