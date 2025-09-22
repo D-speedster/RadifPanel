@@ -4,7 +4,7 @@ import Button from '@/components/ui/Button'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import { apiGetSeller } from '@/services/SellerService'
+import { apiGetSeller, apiUpdateSeller, apiDeleteSeller } from '@/services/SellerService'
 import SellerForm from './SellerForm'
 import sleep from '@/utils/sleep'
 import NoUserFound from '@/assets/svg/NoUserFound'
@@ -32,17 +32,30 @@ const SellerEdit = () => {
     const [isSubmiting, setIsSubmiting] = useState(false)
 
     const handleFormSubmit = async (values: SellerFormSchema) => {
-        console.log('Submitted values', values)
-        setIsSubmiting(true)
-        await sleep(800)
-        setIsSubmiting(false)
-        toast.push(
-            <Notification type="success">تغییرات فروشنده ذخیره شد!</Notification>,
-            {
-                placement: 'top-center',
-            },
-        )
-        navigate('/sellers')
+        if (!id) return
+        
+        try {
+            setIsSubmiting(true)
+            await apiUpdateSeller(id, values)
+            toast.push(
+                <Notification type="success">تغییرات فروشنده با موفقیت ذخیره شد!</Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+            navigate('/sellers')
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    خطا در ذخیره تغییرات: {error instanceof Error ? error.message : 'خطای نامشخص'}
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+        } finally {
+            setIsSubmiting(false)
+        }
     }
 
     const getDefaultValues = (): SellerFormSchema => {
@@ -71,13 +84,29 @@ const SellerEdit = () => {
         }
     }
 
-    const handleConfirmDelete = () => {
-        setDeleteConfirmationOpen(false)
-        toast.push(
-            <Notification type="success">فروشنده حذف شد!</Notification>,
-            { placement: 'top-center' },
-        )
-        navigate('/sellers')
+    const handleConfirmDelete = async () => {
+        if (!id) return
+        
+        try {
+            await apiDeleteSeller(id)
+            setDeleteConfirmationOpen(false)
+            toast.push(
+                <Notification type="success">فروشنده با موفقیت حذف شد!</Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+            navigate('/sellers')
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    خطا در حذف فروشنده: {error instanceof Error ? error.message : 'خطای نامشخص'}
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+        }
     }
 
     const handleDelete = () => {

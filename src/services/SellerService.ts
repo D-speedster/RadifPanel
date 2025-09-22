@@ -1,4 +1,6 @@
 import ApiService from './ApiService'
+import SellerMockService from './SellerMockService'
+import type { CommonResponse } from '@/@types/common'
 
 // کش کردن لیست فروشندگان برای استفاده در توابع دیگر
 let cachedSellerList: any[] = [];
@@ -60,24 +62,22 @@ export async function apiGetSeller<T, U extends Record<string, unknown>>({
     })
 }
 
-export async function apiUpdateSeller<T, U extends Record<string, unknown>>(
-    id: string | number,
-    data: U,
-) {
-    return ApiService.fetchDataWithAxios<T>({
-        url: `/sellers/${id}`,
-        method: 'put',
-        data,
-    })
+export const apiUpdateSeller = async (id: string, sellerData: any) => {
+    try {
+        return await SellerMockService.updateSeller(id, sellerData)
+    } catch (error) {
+        console.error('Update seller error:', error)
+        throw error
+    }
 }
 
-export async function apiDeleteSeller<T>(
-    id: string | number,
-) {
-    return ApiService.fetchDataWithAxios<T>({
-        url: `/sellers/${id}`,
-        method: 'delete',
-    })
+export const apiDeleteSeller = async (id: string) => {
+    try {
+        return await SellerMockService.deleteSeller(id)
+    } catch (error) {
+        console.error('Delete seller error:', error)
+        throw error
+    }
 }
 
 export async function apiCreateSeller<T, U extends Record<string, unknown>>(

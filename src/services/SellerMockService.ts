@@ -3,15 +3,20 @@ interface Seller {
     name: string
     email: string
     phone: string
-    company: string
     status: 'active' | 'inactive' | 'pending'
-    totalProducts: number
-    totalOrders: number
-    totalRevenue: number
-    rating: number
-    joinDate: string
-    lastActive: string
+    product_count: number
+    role: string
+    created_at: string
+    updated_at: string
     avatar?: string
+    // Additional fields for compatibility
+    company?: string
+    totalProducts?: number
+    totalOrders?: number
+    totalRevenue?: number
+    rating?: number
+    joinDate?: string
+    lastActive?: string
     address?: string
     description?: string
 }
@@ -27,15 +32,19 @@ const mockSellers: Seller[] = [
         name: 'علی رضایی',
         email: 'ali.rezaei@example.com',
         phone: '09123456789',
-        company: 'فروشگاه دیجیتال رضا',
         status: 'active',
+        product_count: 156,
+        role: 'premium',
+        created_at: '2024-01-15T10:00:00Z',
+        updated_at: '2024-03-15T14:30:00Z',
+        avatar: '/img/avatars/seller1.jpg',
+        company: 'فروشگاه دیجیتال رضا',
         totalProducts: 156,
         totalOrders: 1243,
         totalRevenue: 125000000,
         rating: 4.8,
         joinDate: '2024-01-15T10:00:00Z',
         lastActive: '2024-03-15T14:30:00Z',
-        avatar: '/img/avatars/seller1.jpg',
         address: 'تهران، خیابان ولیعصر',
         description: 'تخصص در محصولات دیجیتال و الکترونیک'
     },
@@ -44,15 +53,19 @@ const mockSellers: Seller[] = [
         name: 'زهرا محمدی',
         email: 'zahra.mohammadi@example.com',
         phone: '09129876543',
-        company: 'زیبایی و مد زهرا',
         status: 'active',
+        product_count: 89,
+        role: 'standard',
+        created_at: '2024-02-01T09:00:00Z',
+        updated_at: '2024-03-14T16:45:00Z',
+        avatar: '/img/avatars/seller2.jpg',
+        company: 'زیبایی و مد زهرا',
         totalProducts: 89,
         totalOrders: 876,
         totalRevenue: 89000000,
         rating: 4.6,
         joinDate: '2024-02-01T09:00:00Z',
         lastActive: '2024-03-14T16:45:00Z',
-        avatar: '/img/avatars/seller2.jpg',
         address: 'اصفهان، چهارراه خواجو',
         description: 'پوشاک زنانه و اکسسوری'
     },
@@ -61,15 +74,19 @@ const mockSellers: Seller[] = [
         name: 'حسین احمدی',
         email: 'hossein.ahmadi@example.com',
         phone: '09121234567',
-        company: 'کفش و پوشاک حسین',
         status: 'pending',
+        product_count: 45,
+        role: 'standard',
+        created_at: '2024-03-01T11:00:00Z',
+        updated_at: '2024-03-15T10:15:00Z',
+        avatar: '/img/avatars/seller3.jpg',
+        company: 'کفش و پوشاک حسین',
         totalProducts: 45,
         totalOrders: 234,
         totalRevenue: 45000000,
         rating: 4.2,
         joinDate: '2024-03-01T11:00:00Z',
         lastActive: '2024-03-15T10:15:00Z',
-        avatar: '/img/avatars/seller3.jpg',
         address: 'شیراز، خیابان انقلاب',
         description: 'تخصص در کفش و پوشاک مردانه'
     },
@@ -78,15 +95,19 @@ const mockSellers: Seller[] = [
         name: 'فاطمه کریمی',
         email: 'fatemeh.karimi@example.com',
         phone: '09122345678',
-        company: 'خانه و آشپزخانه فاطمه',
         status: 'active',
+        product_count: 203,
+        role: 'premium',
+        created_at: '2023-12-10T08:30:00Z',
+        updated_at: '2024-03-15T15:20:00Z',
+        avatar: '/img/avatars/seller4.jpg',
+        company: 'خانه و آشپزخانه فاطمه',
         totalProducts: 203,
         totalOrders: 1567,
         totalRevenue: 234000000,
         rating: 4.9,
         joinDate: '2023-12-10T08:30:00Z',
         lastActive: '2024-03-15T15:20:00Z',
-        avatar: '/img/avatars/seller4.jpg',
         address: 'تبریز، خیابان امام',
         description: 'محصولات خانگی و آشپزخانه'
     },
@@ -95,15 +116,19 @@ const mockSellers: Seller[] = [
         name: 'محمد جوادی',
         email: 'mohammad.javadi@example.com',
         phone: '09123456780',
-        company: 'کتاب و لوازم التحریر محمد',
         status: 'inactive',
+        product_count: 78,
+        role: 'basic',
+        created_at: '2024-01-20T14:00:00Z',
+        updated_at: '2024-02-28T12:00:00Z',
+        avatar: '/img/avatars/seller5.jpg',
+        company: 'کتاب و لوازم التحریر محمد',
         totalProducts: 78,
         totalOrders: 445,
         totalRevenue: 67000000,
         rating: 4.4,
         joinDate: '2024-01-20T14:00:00Z',
         lastActive: '2024-02-28T12:00:00Z',
-        avatar: '/img/avatars/seller5.jpg',
         address: 'مشهد، خیابان احمدآباد',
         description: 'کتاب، لوازم التحریر و محصولات فرهنگی'
     }
@@ -161,6 +186,10 @@ const SellerMockService = {
         const newSeller: Seller = {
             id: String(Date.now()),
             ...data,
+            product_count: 0,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            // Additional fields for compatibility
             totalProducts: 0,
             totalOrders: 0,
             totalRevenue: 0,
@@ -185,6 +214,7 @@ const SellerMockService = {
         mockSellers[index] = {
             ...mockSellers[index],
             ...data,
+            updated_at: new Date().toISOString(),
             lastActive: new Date().toISOString()
         }
         

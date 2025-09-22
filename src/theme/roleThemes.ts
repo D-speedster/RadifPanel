@@ -20,11 +20,11 @@ export const roleThemes: Record<Role, ThemeConfig> = {
     admin: {
         themeSchema: 'default',
         direction: THEME_ENUM.DIR_RTL,
-        mode: THEME_ENUM.MODE_DARK,
+        mode: THEME_ENUM.MODE_LIGHT,
         panelExpand: true,
         controlSize: 'lg',
         layout: {
-            type: THEME_ENUM.LAYOUT_COLLAPSIBLE_SIDE,
+            type: THEME_ENUM.LAYOUT_FRAMELESS_SIDE,
             sideNavCollapse: true,
         },
     },

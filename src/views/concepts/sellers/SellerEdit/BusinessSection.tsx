@@ -32,6 +32,8 @@ const BusinessSection = ({ control, errors }: BusinessSectionProps) => {
                                 label="وضعیت"
                                 placeholder="وضعیت را انتخاب کنید"
                                 options={statusOptions}
+                                value={statusOptions.find(option => option.value === field.value)}
+                                onChange={(option) => field.onChange(option?.value)}
                                 invalid={Boolean(errors.status)}
                             />
                         )}
@@ -52,6 +54,8 @@ const BusinessSection = ({ control, errors }: BusinessSectionProps) => {
                                 label="نوع اکانت"
                                 placeholder="نوع اکانت را انتخاب کنید"
                                 options={roleOptions}
+                                value={roleOptions.find(option => option.value === field.value)}
+                                onChange={(option) => field.onChange(option?.value)}
                                 invalid={Boolean(errors.role)}
                             />
                         )}

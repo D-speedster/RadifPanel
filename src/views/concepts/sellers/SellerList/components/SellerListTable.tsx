@@ -5,7 +5,10 @@ import DataTable from '@/components/shared/DataTable'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
+import toast from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
 import useSellerList from '../hooks/useSellerList'
+import { apiDeleteSeller } from '@/services/SellerService'
 import cloneDeep from 'lodash/cloneDeep'
 import { useNavigate } from 'react-router-dom'
 import { TbPencil, TbTrash, TbWifiOff, TbPhone, TbPackage, TbDotsVertical } from 'react-icons/tb'
@@ -244,12 +247,38 @@ const SellerListTable = () => {
         setConfirmDialogOpen(true)
     }
 
-    const handleConfirmDelete = () => {
+    const handleConfirmDelete = async () => {
         if (selectedSeller) {
-            // Here you would typically call an API to delete the seller
-            console.log('Deleting seller:', selectedSeller.id)
-            // After successful deletion, you might want to refresh the data
-            mutate()
+            try {
+                await apiDeleteSeller(selectedSeller.id)
+                toast.push(
+                    <Notification
+                        title="موفقیت"
+                        type="success"
+                        duration={2500}
+                    >
+                        فروشنده با موفقیت حذف شد
+                    </Notification>,
+                    {
+                        placement: 'top-center',
+                    }
+                )
+                // Refresh the data after successful deletion
+                mutate()
+            } catch (error) {
+                toast.push(
+                    <Notification
+                        title="خطا"
+                        type="danger"
+                        duration={2500}
+                    >
+                        خطا در حذف فروشنده: {error instanceof Error ? error.message : 'خطای نامشخص'}
+                    </Notification>,
+                    {
+                        placement: 'top-center',
+                    }
+                )
+            }
         }
         setConfirmDialogOpen(false)
         setSelectedSeller(null)
