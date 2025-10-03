@@ -72,6 +72,28 @@ const ContactInfoSection = ({ control, errors }: FormSectionBaseProps) => {
                             />
                         </FormItem>
                     </div>
+
+                    <div className="md:col-span-2">
+                        <FormItem
+                            label="توضیحات"
+                            invalid={Boolean((errors as any).description)}
+                            errorMessage={(errors as any).description?.message}
+                            asterisk
+                        >
+                            <Controller
+                                name="description"
+                                control={control}
+                                render={({ field }) => (
+                                    <Input
+                                        textArea
+                                        placeholder="توضیحات مختصر درباره فروشنده"
+                                        rows={3}
+                                        {...field}
+                                    />
+                                )}
+                            />
+                        </FormItem>
+                    </div>
                 </div>
             </div>
         </Card>

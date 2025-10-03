@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Form } from '@/components/ui/Form'
+import BottomStickyBar from '@/components/template/BottomStickyBar'
 import Container from '@/components/shared/Container'
 import StoreInfoSection from './components/StoreInfoSection'
 import ContactInfoSection from './components/ContactInfoSection'
@@ -14,9 +15,7 @@ import type { SellerCreateFormProps, SellerCreateFormSchema } from './types'
 const validationSchema = z.object({
     // اطلاعات پایه فروشگاه
     storeName: z.string().min(1, 'نام فروشگاه الزامی است'),
-    storeType: z.enum(['online', 'physical', 'both'], {
-        required_error: 'نوع فروشگاه الزامی است'
-    }),
+    storeType: z.enum(['online', 'physical', 'both']).optional(),
     websiteUrl: z.string().url('آدرس وب‌سایت معتبر نیست').optional().or(z.literal('')),
     storeLogo: z.string().optional(),
     
@@ -24,20 +23,20 @@ const validationSchema = z.object({
     phone: z.string().min(1, 'شماره تماس الزامی است'),
     supportEmail: z.string().email('ایمیل معتبر نیست'),
     address: z.string().min(1, 'آدرس الزامی است'),
+    description: z.string().min(1, 'توضیحات الزامی است'),
     
     // اطلاعات مدیریتی
-    status: z.enum(['active', 'inactive', 'pending'], {
-        required_error: 'وضعیت الزامی است'
-    }),
-    registrationDate: z.string().min(1, 'تاریخ ثبت الزامی است'),
+    status: z.enum(['active', 'inactive', 'pending']).optional(),
+    registrationDate: z.string().optional().or(z.literal('')),
     responsibleAdmin: z.string().optional(),
+    password: z.string().min(6, 'رمز عبور باید حداقل ۶ کاراکتر باشد'),
     
     // موارد مالی
     bankAccountNumber: z.string().optional(),
     taxInfo: z.string().optional(),
     
     // تنظیمات نمایش
-    productCategories: z.array(z.string()).min(1, 'حداقل یک دسته‌بندی انتخاب کنید')
+    productCategories: z.array(z.string()).optional().or(z.literal([]))
 })
 
 const SellerCreateForm = ({ onFormSubmit, children }: SellerCreateFormProps) => {
@@ -55,9 +54,11 @@ const SellerCreateForm = ({ onFormSubmit, children }: SellerCreateFormProps) => 
             phone: '',
             supportEmail: '',
             address: '',
+            description: '',
             status: 'pending',
             registrationDate: new Date().toISOString().split('T')[0],
             responsibleAdmin: '',
+            password: '',
             bankAccountNumber: '',
             taxInfo: '',
             productCategories: []
@@ -70,24 +71,29 @@ const SellerCreateForm = ({ onFormSubmit, children }: SellerCreateFormProps) => 
     }
 
     return (
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form
+            className="flex w-full h-full"
+            containerClassName="flex flex-col w-full justify-between"
+            onSubmit={handleSubmit(onSubmit)}
+        >
             <Container>
-                <div className="max-w-4xl mx-auto">
-                    <div className="mb-8">
-                        <h3 className="mb-2 text-xl font-bold">ایجاد فروشنده جدید</h3>
+                <div className="flex flex-col gap-6">
+                    <div className="bg-white rounded-lg shadow-sm border p-6">
+                        <h3 className="text-lg font-semibold mb-2">ایجاد فروشنده جدید</h3>
                         <p className="text-gray-600">اطلاعات فروشنده جدید را وارد کنید</p>
                     </div>
-                    
-                    <div className="space-y-8">
-                        <StoreInfoSection control={control} errors={errors} />
-                        <ContactInfoSection control={control} errors={errors} />
-                        <ManagementInfoSection control={control} errors={errors} />
-                        <FinancialInfoSection control={control} errors={errors} />
-                        <DisplaySettingsSection control={control} errors={errors} />
-                    </div>
+
+                    <StoreInfoSection control={control} errors={errors} />
+                    <ContactInfoSection control={control} errors={errors} />
+                    <ManagementInfoSection control={control} errors={errors} />
+                    <FinancialInfoSection control={control} errors={errors} />
+                    <DisplaySettingsSection control={control} errors={errors} />
                 </div>
             </Container>
-            {children}
+
+            <BottomStickyBar>
+                {children}
+            </BottomStickyBar>
         </Form>
     )
 }

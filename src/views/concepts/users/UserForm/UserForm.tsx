@@ -4,7 +4,6 @@ import Container from '@/components/shared/Container'
 import BottomStickyBar from '@/components/template/BottomStickyBar'
 import BasicInfoSection from './BasicInfoSection'
 import RoleSection from './RoleSection'
-import RoleSpecificFields from './RoleSpecificFields'
 import isEmpty from 'lodash/isEmpty'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useWatch } from 'react-hook-form'
@@ -17,70 +16,18 @@ type UserFormProps = {
     onFormSubmit: (values: UserFormSchema) => void
     defaultValues?: UserFormSchema
     newUser?: boolean
+    serverErrors?: Record<string, string[]>
 } & CommonProps
 
-const createValidationSchema = (role: string, isEdit: boolean = false) => {
-    const baseSchema = {
-        fullName: z.string().min(1, { message: 'نام کامل الزامی است' }),
-        email: z.string().email({ message: 'ایمیل نامعتبر است' }).optional().or(z.literal('')),
-        phone: z.string().min(1, { message: 'شماره تلفن الزامی است' }),
-        password: isEdit 
-            ? z.string().optional().or(z.literal('')) // اختیاری برای ویرایش
+const createValidationSchema = (isEdit: boolean = false) => {
+    return z.object({
+        name: z.string().min(1, { message: 'نام الزامی است' }),
+        email: z.string().email({ message: 'ایمیل نامعتبر است' }),
+        mobile: z.string().min(1, { message: 'موبایل الزامی است' }),
+        password: isEdit
+            ? z.string().optional().or(z.literal(''))
             : z.string().min(6, { message: 'رمز عبور باید حداقل ۶ کاراکتر باشد' }),
         role: z.string().min(1, { message: 'انتخاب نقش الزامی است' }),
-        status: z.string().min(1, { message: 'انتخاب وضعیت الزامی است' }),
-    }
-
-    // فیلدهای اختصاصی بر اساس نقش
-    if (role === 'seller') {
-        return z.object({
-            ...baseSchema,
-            shopName: z.string().min(1, { message: 'نام فروشگاه الزامی است' }),
-            businessLicense: z.string().optional(),
-            bankAccount: z.string().optional(),
-            department: z.string().optional(),
-            accessLevel: z.string().optional(),
-            shift: z.string().optional(),
-            workArea: z.string().optional(),
-        })
-    }
-
-    if (role === 'admin') {
-        return z.object({
-            ...baseSchema,
-            shopName: z.string().optional(),
-            businessLicense: z.string().optional(),
-            bankAccount: z.string().optional(),
-            department: z.string().min(1, { message: 'انتخاب بخش الزامی است' }),
-            accessLevel: z.string().min(1, { message: 'انتخاب سطح دسترسی الزامی است' }),
-            shift: z.string().optional(),
-            workArea: z.string().optional(),
-        })
-    }
-
-    if (role === 'operator') {
-        return z.object({
-            ...baseSchema,
-            shopName: z.string().optional(),
-            businessLicense: z.string().optional(),
-            bankAccount: z.string().optional(),
-            department: z.string().optional(),
-            accessLevel: z.string().optional(),
-            shift: z.string().min(1, { message: 'انتخاب شیفت الزامی است' }),
-            workArea: z.string().min(1, { message: 'انتخاب حوزه کاری الزامی است' }),
-        })
-    }
-
-    // برای کاربر عادی
-    return z.object({
-        ...baseSchema,
-        shopName: z.string().optional(),
-        businessLicense: z.string().optional(),
-        bankAccount: z.string().optional(),
-        department: z.string().optional(),
-        accessLevel: z.string().optional(),
-        shift: z.string().optional(),
-        workArea: z.string().optional(),
     })
 }
 
@@ -98,24 +45,17 @@ const UserForm = (props: UserFormProps) => {
         formState: { errors },
         reset,
         trigger,
+        setError,
     } = useForm<UserFormSchema>({
         defaultValues: {
-            fullName: '',
+            name: '',
             email: '',
-            phone: '',
+            mobile: '',
             password: '',
             role: '',
-            status: 'active',
-            shopName: '',
-            businessLicense: '',
-            bankAccount: '',
-            department: '',
-            accessLevel: '',
-            shift: '',
-            workArea: '',
             ...defaultValues,
         },
-        resolver: zodResolver(createValidationSchema('', !newUser)),
+        resolver: zodResolver(createValidationSchema(!newUser)),
     })
 
     const selectedRole = useWatch({
@@ -130,24 +70,24 @@ const UserForm = (props: UserFormProps) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [JSON.stringify(defaultValues)])
 
-    useEffect(() => {
-        if (selectedRole) {
-            // Force re-validation when role changes
-            trigger()
-        }
-    }, [selectedRole, trigger])
+    // حذف اعتبارسنجی وابسته به نقش
 
+    // نمایش ارورهای سمت سرور زیر فیلدها
+    useEffect(() => {
+        if (!props.serverErrors) return
+        const entries = Object.entries(props.serverErrors)
+        entries.forEach(([key, messages]) => {
+            if (Array.isArray(messages) && messages.length > 0) {
+                const field = key as keyof UserFormSchema
+                setError(field, { type: 'server', message: messages[0] })
+            }
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [JSON.stringify(props.serverErrors)])
 
 
     const onSubmit = async (values: UserFormSchema) => {
-        // Validate with current role schema before submitting
-        const schema = createValidationSchema(selectedRole || '')
-        try {
-            const validatedValues = schema.parse(values)
-            onFormSubmit?.(validatedValues)
-        } catch (error) {
-            console.error('Validation error:', error)
-        }
+        onFormSubmit?.(values)
     }
 
     return (
@@ -172,11 +112,7 @@ const UserForm = (props: UserFormProps) => {
                         />
                     </div>
                     
-                    <RoleSpecificFields 
-                        control={control} 
-                        errors={errors} 
-                        selectedRole={selectedRole}
-                    />
+                    {/* فیلدهای نقش‌محور حذف شدند */}
                 </div>
             </Container>
             

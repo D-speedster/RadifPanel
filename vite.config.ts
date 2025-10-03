@@ -20,46 +20,11 @@ export default defineConfig({
       credentials: true
     },
     proxy: {
+      // فقط مسیرهای API با پیشوند /api به بک‌اند پروکسی می‌شوند
       '/api': {
         target: 'https://api.radif.org/',
         changeOrigin: true,
         secure: false
-      },
-      '/login': {
-        target: 'https://api.radif.org/',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path
-      },
-      '/user': {
-        target: 'https://api.radif.org/',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path
-      },
-      '/sign-out': {
-        target: 'https://api.radif.org/',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path
-      },
-      '/register': {
-        target: 'https://api.radif.org/',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path
-      },
-      '/forgot-password': {
-        target: 'https://api.radif.org/',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path
-      },
-      '/reset-password': {
-        target: 'https://api.radif.org/',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path
       }
     }
   },

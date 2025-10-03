@@ -1,4 +1,4 @@
-import { Card } from '@/components/ui'
+import { Card, FormItem } from '@/components/ui'
 import Input from '@/components/ui/Input'
 import { Controller } from 'react-hook-form'
 import type { FormSectionBaseProps } from './types'
@@ -8,32 +8,30 @@ type BasicInfoSectionProps = FormSectionBaseProps
 const BasicInfoSection = ({ control, errors }: BasicInfoSectionProps) => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                    نام کامل <span className="text-red-500">*</span>
-                </label>
+            <FormItem
+                asterisk
+                label="نام"
+                invalid={Boolean(errors.name)}
+                errorMessage={errors.name?.message as string}
+            >
                 <Controller
-                    name="fullName"
+                    name="name"
                     control={control}
                     render={({ field }) => (
                         <Input
                             {...field}
-                            placeholder="نام و نام خانوادگی را وارد کنید"
-                            invalid={Boolean(errors.fullName)}
+                            placeholder="نام کاربر را وارد کنید"
                         />
                     )}
                 />
-                {errors.fullName && (
-                    <span className="text-red-500 text-sm mt-1">
-                        {errors.fullName.message}
-                    </span>
-                )}
-            </div>
+            </FormItem>
 
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                    ایمیل (اختیاری)
-                </label>
+            <FormItem
+                asterisk
+                label="ایمیل"
+                invalid={Boolean(errors.email)}
+                errorMessage={errors.email?.message as string}
+            >
                 <Controller
                     name="email"
                     control={control}
@@ -42,43 +40,35 @@ const BasicInfoSection = ({ control, errors }: BasicInfoSectionProps) => {
                             {...field}
                             type="email"
                             placeholder="example@domain.com"
-                            invalid={Boolean(errors.email)}
                         />
                     )}
                 />
-                {errors.email && (
-                    <span className="text-red-500 text-sm mt-1">
-                        {errors.email.message}
-                    </span>
-                )}
-            </div>
+            </FormItem>
 
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                    شماره تلفن <span className="text-red-500">*</span>
-                </label>
+            <FormItem
+                asterisk
+                label="موبایل"
+                invalid={Boolean(errors.mobile)}
+                errorMessage={errors.mobile?.message as string}
+            >
                 <Controller
-                    name="phone"
+                    name="mobile"
                     control={control}
                     render={({ field }) => (
                         <Input
                             {...field}
                             placeholder="09123456789"
-                            invalid={Boolean(errors.phone)}
                         />
                     )}
                 />
-                {errors.phone && (
-                    <span className="text-red-500 text-sm mt-1">
-                        {errors.phone.message}
-                    </span>
-                )}
-            </div>
+            </FormItem>
 
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                    رمز عبور <span className="text-red-500">*</span>
-                </label>
+            <FormItem
+                asterisk
+                label="رمز عبور"
+                invalid={Boolean(errors.password)}
+                errorMessage={errors.password?.message as string}
+            >
                 <Controller
                     name="password"
                     control={control}
@@ -87,16 +77,10 @@ const BasicInfoSection = ({ control, errors }: BasicInfoSectionProps) => {
                             {...field}
                             type="password"
                             placeholder="حداقل ۶ کاراکتر"
-                            invalid={Boolean(errors.password)}
                         />
                     )}
                 />
-                {errors.password && (
-                    <span className="text-red-500 text-sm mt-1">
-                        {errors.password.message}
-                    </span>
-                )}
-            </div>
+            </FormItem>
         </div>
     )
 }

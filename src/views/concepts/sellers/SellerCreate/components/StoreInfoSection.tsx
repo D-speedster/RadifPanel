@@ -73,7 +73,11 @@ const StoreInfoSection = ({ control, errors }: FormSectionBaseProps) => {
                                 <Select
                                     placeholder="نوع فروشگاه را انتخاب کنید"
                                     options={storeTypeOptions}
-                                    {...field}
+                                    value={storeTypeOptions.find(option => option.value === field.value) || null}
+                                    onChange={(selectedOption) => {
+                                        const value = (selectedOption as any)?.value || ''
+                                        field.onChange(value)
+                                    }}
                                 />
                             )}
                         />

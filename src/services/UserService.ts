@@ -44,32 +44,16 @@ export async function apiGetUser<T, U extends Record<string, unknown>>({
 export const apiCreateUser = async <T, U extends Record<string, unknown>>(
     data: U,
 ) => {
-    // Transform frontend data to API format
-    const transformedData = {
-        name: (data as any).fullName,   // API expects 'name' but form sends 'fullName'
-        email: (data as any).email,    // API expects 'email'
-        mobile: (data as any).phone,   // API expects 'mobile' but form sends 'phone'
-        password: (data as any).password, // API expects 'password'
-        role: (data as any).role,      // API expects 'role'
-    }
-    
-    console.log('Original form data:', data)
-    console.log('Transformed data being sent to API:', transformedData)
-    
-    try {
-        const response = await ApiService.fetchDataWithAxios<T>({
-            url: '/users/create',
-            method: 'post',
-            data: transformedData,
-        })
-        console.log('API Response:', response)
-        return response
-    } catch (error) {
-        console.error('API Error:', error)
-        console.error('Error response:', error.response?.data)
-        console.error('Error status:', error.response?.status)
-        throw error
-    }
+    // فقط فیلدهای موردنیاز API ارسال می‌شوند
+    const { name, email, mobile, password, role } = data as any
+
+    const payload = { name, email, mobile, password, role }
+
+    return ApiService.fetchDataWithAxios<T>({
+        url: '/users/create',
+        method: 'post',
+        data: payload,
+    })
 }
 
 export async function apiUpdateUser<T, U extends Record<string, unknown>>(

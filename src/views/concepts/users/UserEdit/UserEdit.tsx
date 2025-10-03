@@ -9,6 +9,7 @@ import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import Spinner from '@/components/ui/Spinner'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
+import Button from '@/components/ui/Button'
 import type { UserFormSchema } from '../UserForm'
 import type { User } from '../UserList/types'
 
@@ -18,6 +19,7 @@ const UserEdit = () => {
     const { userList, isLoading } = useUserList()
     const [user, setUser] = useState<User | null>(null)
     const [submitting, setSubmitting] = useState(false)
+    const [serverErrors, setServerErrors] = useState<Record<string, string[]>>({})
     const [discardConfirmationOpen, setDiscardConfirmationOpen] = useState(false)
 
     useEffect(() => {
@@ -43,9 +45,9 @@ const UserEdit = () => {
             
             // Transform form data to API format
             const transformedData = {
-                name: values.fullName,
+                name: values.name ?? values.fullName ?? '',
                 email: values.email,
-                mobile: values.phone,
+                mobile: values.mobile ?? values.phone ?? '',
                 role: values.role,
                 status: values.status,
                 // Only include password if it's provided
@@ -77,12 +79,20 @@ const UserEdit = () => {
             
             navigate('/users-list')
         } catch (error) {
+            const apiError = (error as any)?.response?.data
+            const message = apiError?.message || 'خطا در به‌روزرسانی کاربر!'
+            const fieldErrors = (apiError?.errors ?? {}) as Record<string, string[]>
+
+            // نمایش پیام دقیق از سمت API
             toast.push(
                 <Notification type="danger">
-                    خطا در به‌روزرسانی کاربر!
+                    {message}
                 </Notification>,
                 { placement: 'top-center' }
             )
+
+            // انتقال ارورهای فیلدی به فرم برای نمایش زیر هر فیلد
+            setServerErrors(fieldErrors)
         } finally {
             setSubmitting(false)
         }
@@ -154,23 +164,24 @@ const UserEdit = () => {
                         onFormSubmit={handleFormSubmit}
                         defaultValues={getDefaultValues()}
                         newUser={false}
+                        serverErrors={serverErrors}
                     >
                         <div className="flex items-center justify-between">
-                            <button
+                            <Button
                                 type="button"
-                                className="btn btn-default"
+                                variant="default"
                                 onClick={handleDiscard}
                                 disabled={submitting}
                             >
                                 انصراف
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                                 type="submit"
-                                className="btn btn-solid"
+                                variant="solid"
                                 disabled={submitting}
                             >
                                 {submitting ? 'در حال به‌روزرسانی...' : 'به‌روزرسانی کاربر'}
-                            </button>
+                            </Button>
                         </div>
                     </UserForm>
                 </AdaptiveCard>

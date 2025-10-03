@@ -58,19 +58,11 @@ const UserCreate = () => {
             <UserForm
                 newUser
                 defaultValues={{
-                    fullName: '',
+                    name: '',
                     email: '',
-                    phone: '',
+                    mobile: '',
                     password: '',
                     role: '',
-                    status: 'active',
-                    shopName: '',
-                    businessLicense: '',
-                    bankAccount: '',
-                    department: '',
-                    accessLevel: '',
-                    shift: '',
-                    workArea: '',
                 }}
                 onFormSubmit={handleFormSubmit}
             >

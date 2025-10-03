@@ -63,28 +63,30 @@ export async function apiGetSeller<T, U extends Record<string, unknown>>({
 }
 
 export const apiUpdateSeller = async (id: string, sellerData: any) => {
-    try {
-        return await SellerMockService.updateSeller(id, sellerData)
-    } catch (error) {
-        console.error('Update seller error:', error)
-        throw error
-    }
+    // ارسال درخواست ویرایش به API اصلی طبق نیاز کاربر
+    return ApiService.fetchDataWithAxios<unknown>({
+        url: `https://api.radif.org/api/sellers/${id}`,
+        method: 'put',
+        headers: { Accept: 'application/json' },
+        data: sellerData,
+    })
 }
 
 export const apiDeleteSeller = async (id: string) => {
-    try {
-        return await SellerMockService.deleteSeller(id)
-    } catch (error) {
-        console.error('Delete seller error:', error)
-        throw error
-    }
+    // ارسال درخواست حذف به API اصلی طبق مشخصات کاربر
+    return ApiService.fetchDataWithAxios<unknown>({
+        url: `https://api.radif.org/api/sellers/${id}`,
+        method: 'delete',
+        headers: { Accept: 'application/json' },
+    })
 }
 
 export async function apiCreateSeller<T, U extends Record<string, unknown>>(
     data: U,
 ) {
+    // استفاده از URL مطلق برای اطمینان از ارسال درخواست به سرویس اصلی
     return ApiService.fetchDataWithAxios<T>({
-        url: '/sellers',
+        url: 'https://api.radif.org/api/sellers/create',
         method: 'post',
         data,
     })

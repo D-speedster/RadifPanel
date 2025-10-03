@@ -93,7 +93,16 @@ const UserListTable = () => {
     const handleConfirmDelete = async () => {
         setIsDeleting(true)
         try {
-            await apiDeleteUser(toDeleteId)
+            const resp = await apiDeleteUser<{ success?: boolean; message?: string }>(toDeleteId)
+            if (resp && (resp as any).success === false) {
+                toast.push(
+                    <Notification type="danger">
+                        شما دسترسی حذف این کاربر را ندارید
+                    </Notification>,
+                    { placement: 'top-center' },
+                )
+                return
+            }
             
             // Update local state after successful API call
             const newUserList = userList.filter((user) => {

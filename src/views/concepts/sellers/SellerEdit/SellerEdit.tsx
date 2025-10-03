@@ -36,7 +36,15 @@ const SellerEdit = () => {
         
         try {
             setIsSubmiting(true)
-            await apiUpdateSeller(id, values)
+            // فقط فیلدهای موردنیاز API را ارسال می‌کنیم
+            const payload = {
+                name: values.name,
+                email: values.email,
+                mobile: values.phone,
+                address: (data as any)?.address ?? '',
+                description: (data as any)?.description ?? '',
+            }
+            await apiUpdateSeller(id, payload)
             toast.push(
                 <Notification type="success">تغییرات فروشنده با موفقیت ذخیره شد!</Notification>,
                 {

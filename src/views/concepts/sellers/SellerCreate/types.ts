@@ -13,6 +13,7 @@ export type ContactInfoFields = {
     phone: string
     supportEmail: string
     address: string
+    description: string
 }
 
 // اطلاعات مدیریتی
@@ -20,6 +21,7 @@ export type ManagementInfoFields = {
     status: 'active' | 'inactive' | 'pending'
     registrationDate: string
     responsibleAdmin: string
+    password: string
 }
 
 // موارد مالی

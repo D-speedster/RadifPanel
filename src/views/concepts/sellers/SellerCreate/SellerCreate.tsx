@@ -5,6 +5,7 @@ import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import SellerCreateForm from './SellerCreateForm'
 import sleep from '@/utils/sleep'
+import { apiCreateSeller } from '@/services/SellerService'
 import { TbArrowNarrowLeft } from 'react-icons/tb'
 import { useNavigate } from 'react-router'
 import type { SellerCreateFormSchema } from './types'
@@ -16,8 +17,17 @@ const SellerCreate = () => {
     const handleFormSubmit = async (values: SellerCreateFormSchema) => {
         setIsSubmiting(true)
         try {
-            // شبیه‌سازی ارسال داده‌ها به سرور
-            await sleep(1000)
+            // ساخت payload مطابق نیاز API
+            const payload = {
+                name: values.storeName,
+                mobile: values.phone,
+                email: values.supportEmail,
+                password: values.password,
+                address: values.address,
+                description: values.description,
+            }
+
+            await apiCreateSeller<any, typeof payload>(payload)
             
             toast.push(
                 <Notification

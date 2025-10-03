@@ -33,7 +33,11 @@ const ManagementInfoSection = ({ control, errors }: FormSectionBaseProps) => {
                                 <Select
                                     placeholder="وضعیت را انتخاب کنید"
                                     options={statusOptions}
-                                    {...field}
+                                    value={statusOptions.find(option => option.value === field.value) || null}
+                                    onChange={(selectedOption) => {
+                                        const value = (selectedOption as any)?.value || ''
+                                        field.onChange(value)
+                                    }}
                                 />
                             )}
                         />
@@ -51,6 +55,25 @@ const ManagementInfoSection = ({ control, errors }: FormSectionBaseProps) => {
                             render={({ field }) => (
                                 <Input
                                     type="date"
+                                    {...field}
+                                />
+                            )}
+                        />
+                    </FormItem>
+
+                    <FormItem
+                        label="رمز عبور"
+                        invalid={Boolean((errors as any).password)}
+                        errorMessage={(errors as any).password?.message}
+                        asterisk
+                    >
+                        <Controller
+                            name="password"
+                            control={control}
+                            render={({ field }) => (
+                                <Input
+                                    type="password"
+                                    placeholder="حداقل ۶ کاراکتر"
                                     {...field}
                                 />
                             )}
