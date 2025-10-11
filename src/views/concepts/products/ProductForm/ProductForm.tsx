@@ -44,7 +44,7 @@ const validationSchema: ZodType<ProductFormSchema> = z.object({
             }),
         )
         .min(1, { message: 'حداقل یک تصویر الزامی است!' }),
-    category: z.string().min(1, { message: 'دسته‌بندی محصول الزامی است!' }),
+    parent_id: z.string().optional(),
 })
 
 

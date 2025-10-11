@@ -197,7 +197,7 @@ const CategoryDetails = () => {
 
     const handleDelete = () => {
         // Handle delete logic
-        console.log('Delete category:', id)
+        // Implementation would include confirmation dialog and API call
     }
 
     const formatPrice = (price: number) => {

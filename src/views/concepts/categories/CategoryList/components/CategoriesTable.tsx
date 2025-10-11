@@ -12,7 +12,7 @@ interface Category {
     image?: string
     parentId?: string | null
     children?: Category[]
-    productCount: number
+    productCount?: number
     isExpanded?: boolean
     level?: number
 }
@@ -54,7 +54,7 @@ const CategoriesTable = ({ categories, onEdit, onDelete, onReorder }: Categories
         let result: Category[] = []
         cats.forEach(cat => {
             result.push({ ...cat, level })
-            if (cat.children && expandedCategories.has(cat.id)) {
+            if (cat.children && expandedCategories.has(String(cat.id))) {
                 result = result.concat(flattenCategories(cat.children, level + 1))
             }
         })
@@ -65,7 +65,7 @@ const CategoriesTable = ({ categories, onEdit, onDelete, onReorder }: Categories
 
     const renderCategoryRow = (category: Category, level: number = 0): JSX.Element[] => {
         const hasChildren = category.children && category.children.length > 0
-        const isExpanded = expandedCategories.has(category.id)
+        const isExpanded = expandedCategories.has(String(category.id))
         const indentStyle = { paddingRight: `${level * 2}rem` }
 
         const rows: JSX.Element[] = [
@@ -81,7 +81,7 @@ const CategoriesTable = ({ categories, onEdit, onDelete, onReorder }: Categories
                     <div className="flex items-center gap-3">
                         {hasChildren ? (
                             <button
-                                onClick={() => toggleExpanded(category.id)}
+                                onClick={() => toggleExpanded(String(category.id))}
                                 className="p-1 hover:bg-gray-200 rounded transition-colors"
                                 style={{ color: '#A0AEC0' }}
                             >
@@ -243,7 +243,7 @@ const CategoriesTable = ({ categories, onEdit, onDelete, onReorder }: Categories
                             {(provided) => (
                                 <tbody {...provided.droppableProps} ref={provided.innerRef}>
                                     {flatCategories.map((category, index) => (
-                                        <Draggable key={category.id} draggableId={category.id} index={index}>
+                                        <Draggable key={category.id} draggableId={String(category.id)} index={index}>
                                             {(provided, snapshot) => (
                                                 <tr
                                                     ref={provided.innerRef}
@@ -272,11 +272,11 @@ const CategoriesTable = ({ categories, onEdit, onDelete, onReorder }: Categories
                                                         <div className="flex items-center gap-3">
                                                             {category.children && category.children.length > 0 ? (
                                                                 <button
-                                                                    onClick={() => toggleExpanded(category.id)}
+                                                                    onClick={() => toggleExpanded(String(category.id))}
                                                                     className="p-1 hover:bg-gray-200 rounded transition-colors"
                                                                     style={{ color: '#A0AEC0' }}
                                                                 >
-                                                                    {expandedCategories.has(category.id) ? (
+                                                                    {expandedCategories.has(String(category.id)) ? (
                                                                         <HiChevronDown className="w-4 h-4" />
                                                                     ) : (
                                                                         <HiChevronRight className="w-4 h-4" />
@@ -345,7 +345,7 @@ const CategoriesTable = ({ categories, onEdit, onDelete, onReorder }: Categories
                                                                 fontSize: '0.9rem'
                                                             }}
                                                         >
-                                                            {category.productCount.toLocaleString()}
+                                                            {(category.productCount || 0).toLocaleString()}
                                                         </span>
                                                     </td>
                                                     

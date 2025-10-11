@@ -37,7 +37,7 @@ export async function apiCreateCategory<T, U extends Record<string, unknown>>(
     }
     
     return ApiService.fetchDataWithAxios<T>({
-        url: `${apiPrefix}/categories`,
+        url: `${apiPrefix}/categories/create`,
         method: 'post',
         data,
     })

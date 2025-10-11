@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui'
-import { BiExclude } from 'react-icons/bi'
+import { HiOutlineExclamation } from 'react-icons/hi'
 
 interface ConfirmationDialogProps {
     isOpen: boolean
@@ -36,7 +36,7 @@ const ConfirmationDialog = ({ isOpen, title, message, onConfirm, onCancel }: Con
                             backgroundColor: 'rgba(248, 113, 113, 0.1)'
                         }}
                     >
-                        <HiExclamationTriangle 
+                        <HiOutlineExclamation 
                             className="w-6 h-6" 
                             style={{ color: '#F87171' }}
                         />

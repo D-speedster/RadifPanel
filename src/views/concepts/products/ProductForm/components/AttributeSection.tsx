@@ -6,6 +6,7 @@ import { FormItem } from '@/components/ui/Form'
 import { HiOutlineQuestionMarkCircle } from 'react-icons/hi'
 import { Controller } from 'react-hook-form'
 import CreatableSelect from 'react-select/creatable'
+import HierarchicalCategorySelect from './HierarchicalCategorySelect'
 import type { FormSectionBaseProps } from '../types'
 
 type AttributeSectionProps = FormSectionBaseProps
@@ -15,44 +16,29 @@ type Options = {
     value: string
 }[]
 
-const categories: Options = [
-    { label: 'کیف', value: 'bags' },
-    { label: 'لباس', value: 'cloths' },
-    { label: 'دستگاه‌ها', value: 'devices' },
-    { label: 'کفش', value: 'shoes' },
-    { label: 'ساعت', value: 'watches' },
-]
-
 const tags: Options = [
     { label: 'مد روز', value: 'trend' },
-    { label: 'دو جنسیتی', value: 'unisex' },
+    { label: 'مردانه و زنانه', value: 'unisex' },
 ]
 
-
 const AttributeSection = ({ control, errors }: AttributeSectionProps) => {
+
     return (
         <Card>
             <h4 className="mb-6">ویژگی‌ها</h4>
-            <FormItem
-                label="دسته‌بندی"
-                invalid={Boolean(errors.category)}
-                errorMessage={errors.category?.message}
-            >
-                <Controller
-                    name="category"
-                    control={control}
-                    render={({ field }) => (
-                        <Select
-                            placeholder="انتخاب کنید..."
-                            options={categories}
-                            value={categories.filter(
-                                (category) => category.value === field.value,
-                            )}
-                            onChange={(option) => field.onChange(option?.value)}
-                        />
-                    )}
-                />
-            </FormItem>
+            <Controller
+                name="parent_id"
+                control={control}
+                render={({ field }) => (
+                    <HierarchicalCategorySelect
+                        control={control}
+                        errors={errors}
+                        value={field.value}
+                        onChange={field.onChange}
+                    />
+                )}
+            />
+
             <FormItem
                 label="برچسب‌ها"
                 extra={

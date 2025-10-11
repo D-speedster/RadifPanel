@@ -10,7 +10,7 @@ interface Category {
     image?: string
     parentId?: string | null
     children?: Category[]
-    productCount: number
+    productCount?: number
     isExpanded?: boolean
     level?: number
 }
@@ -19,11 +19,12 @@ interface CategoryModalProps {
     isOpen: boolean
     mode: 'add' | 'edit'
     category?: Category | null
+    categories: Category[]
     onClose: () => void
     onSave: (categoryData: Partial<Category>) => void
 }
 
-const CategoryModal = ({ isOpen, mode, category, onClose, onSave }: CategoryModalProps) => {
+const CategoryModal = ({ isOpen, mode, category, categories, onClose, onSave }: CategoryModalProps) => {
     const [formData, setFormData] = useState({
         name: '',
         slug: '',
@@ -31,6 +32,43 @@ const CategoryModal = ({ isOpen, mode, category, onClose, onSave }: CategoryModa
         parentId: '',
         image: ''
     })
+
+    // Helper function to build hierarchical category options
+    const buildCategoryOptions = (categories: Category[], level = 0): JSX.Element[] => {
+        const options: JSX.Element[] = []
+        
+        categories.forEach(cat => {
+            // Add current category
+            const indent = '—'.repeat(level)
+            options.push(
+                <option key={cat.id} value={cat.id}>
+                    {indent} {cat.name}
+                </option>
+            )
+            
+            // Add children recursively
+            if (cat.children && cat.children.length > 0) {
+                options.push(...buildCategoryOptions(cat.children, level + 1))
+            }
+        })
+        
+        return options
+    }
+
+    // Get parent categories (categories without parentId) and build tree structure
+    const getParentCategoriesWithChildren = (): Category[] => {
+        const parentCategories = categories.filter(cat => !cat.parentId || cat.parentId === null || cat.parentId === '')
+        
+        // Build tree structure
+        const buildTree = (parents: Category[]): Category[] => {
+            return parents.map(parent => ({
+                ...parent,
+                children: categories.filter(cat => cat.parentId === parent.id)
+            }))
+        }
+        
+        return buildTree(parentCategories)
+    }
 
     useEffect(() => {
         if (isOpen) {
@@ -188,9 +226,7 @@ const CategoryModal = ({ isOpen, mode, category, onClose, onSave }: CategoryModa
                             }}
                         >
                             <option value="">بدون دسته‌بندی مادر</option>
-                            <option value="1">الکترونیک</option>
-                            <option value="7">پوشاک و مد</option>
-                            <option value="11">خانه و آشپزخانه</option>
+                            {buildCategoryOptions(getParentCategoriesWithChildren())}
                         </select>
                     </div>
 

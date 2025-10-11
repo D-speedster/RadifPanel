@@ -48,7 +48,7 @@ export type ImageFields = {
 }
 
 export type AttributeFields = {
-    category: string
+    parent_id?: string
     tags?: { label: string; value: string }[]
     brand?: string
 }

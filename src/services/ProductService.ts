@@ -60,3 +60,17 @@ export async function apiDeleteProduct<T>(
         method: 'delete',
     })
 }
+
+export async function apiCreateProduct<T, U extends Record<string, unknown>>(
+    data: U,
+) {
+    return ApiService.fetchDataWithAxios<T>({
+        url: 'https://api.radif.org/api/products/create',
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        data,
+    })
+}

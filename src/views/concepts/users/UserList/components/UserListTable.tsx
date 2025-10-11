@@ -169,6 +169,18 @@ const UserListTable = () => {
                 },
             },
             {
+                header: 'نقش',
+                accessorKey: 'role',
+                cell: (props) => {
+                    const { role } = props.row.original
+                    return (
+                        <span className="font-mono text-sm text-gray-600">
+                            {role}
+                        </span>
+                    )
+                },
+            },
+            {
                 header: 'تاریخ ایجاد',
                 accessorKey: 'created_at',
                 cell: (props) => {
@@ -194,6 +206,7 @@ const UserListTable = () => {
                     )
                 },
             },
+              
             {
                 header: '',
                 id: 'action',

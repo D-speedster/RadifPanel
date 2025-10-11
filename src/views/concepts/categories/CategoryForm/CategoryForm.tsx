@@ -196,7 +196,6 @@ const CategoryForm = () => {
                     خطا در {isEdit ? 'به‌روزرسانی' : 'ایجاد'} دسته‌بندی
                 </Notification>
             )
-            console.error('Error saving category:', error)
         } finally {
             setLoading(false)
         }

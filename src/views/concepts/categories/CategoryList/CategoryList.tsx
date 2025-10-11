@@ -1,127 +1,170 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui'
 import { HiPlus, HiPencil, HiTrash, HiChevronRight, HiChevronDown } from 'react-icons/hi'
 import Container from '@/components/shared/Container'
 import AdaptiveCard from '@/components/shared/AdaptiveCard'
-import CategoriesTable from './components/CategoriesTable'
+import CategoryTreeView from './components/CategoryTreeView'
 import CategoryModal from './components/CategoryModal'
 import ConfirmationDialog from './components/ConfirmationDialog'
+import { apiCreateCategory, apiGetCategoryList, apiDeleteCategory, apiUpdateCategory } from '@/services/CategoryService'
 
 // Enhanced category type with tree structure support
 interface Category {
-    id: string
+    id: string | number
     name: string
     slug: string
     description?: string
     image?: string
-    parentId?: string | null
+    parent_id?: string | number | null
     children?: Category[]
-    productCount: number
+    productCount?: number
     isExpanded?: boolean
     level?: number
 }
 
-// Mock data for categories with tree structure
-const mockCategories: Category[] = [
-    {
-        id: '1',
-        name: 'الکترونیک',
-        slug: 'electronics',
-        description: 'محصولات الکترونیکی و دیجیتال',
-        image: '',
-        parentId: null,
-        productCount: 1250,
-        isExpanded: true,
-        children: [
-            {
-                id: '2',
-                name: 'موبایل و تبلت',
-                slug: 'mobile-tablet',
-                parentId: '1',
-                productCount: 450,
-                isExpanded: false,
-                children: [
-                    {
-                        id: '3',
-                        name: 'گوشی هوشمند',
-                        slug: 'smartphones',
-                        parentId: '2',
-                        productCount: 320,
-                    },
-                    {
-                        id: '4',
-                        name: 'تبلت',
-                        slug: 'tablets',
-                        parentId: '2',
-                        productCount: 130,
-                    }
-                ]
-            },
-            {
-                id: '5',
-                name: 'لپ تاپ و کامپیوتر',
-                slug: 'laptop-computer',
-                parentId: '1',
-                productCount: 280,
-            },
-            {
-                id: '6',
-                name: 'لوازم جانبی',
-                slug: 'accessories',
-                parentId: '1',
-                productCount: 520,
-            }
-        ]
-    },
-    {
-        id: '7',
-        name: 'پوشاک و مد',
-        slug: 'fashion',
-        description: 'لباس، کفش و اکسسوری',
-        parentId: null,
-        productCount: 890,
-        isExpanded: false,
-        children: [
-            {
-                id: '8',
-                name: 'لباس مردانه',
-                slug: 'mens-clothing',
-                parentId: '7',
-                productCount: 340,
-            },
-            {
-                id: '9',
-                name: 'لباس زنانه',
-                slug: 'womens-clothing',
-                parentId: '7',
-                productCount: 420,
-            },
-            {
-                id: '10',
-                name: 'کفش',
-                slug: 'shoes',
-                parentId: '7',
-                productCount: 130,
-            }
-        ]
-    },
-    {
-        id: '11',
-        name: 'خانه و آشپزخانه',
-        slug: 'home-kitchen',
-        description: 'لوازم خانگی و آشپزخانه',
-        parentId: null,
-        productCount: 650,
-        isExpanded: false
-    }
-]
+
+
+// Function to convert flat list to tree structure
+const buildCategoryTree = (categories: Category[]): Category[] => {
+    const categoryMap = new Map<string | number, Category>()
+    const rootCategories: Category[] = []
+
+    // First pass: create map of all categories
+    categories.forEach(category => {
+        categoryMap.set(category.id, { ...category, children: [], level: 0 })
+    })
+
+    // Second pass: build tree structure
+    categories.forEach(category => {
+        const categoryNode = categoryMap.get(category.id)!
+        
+        if (category.parent_id && categoryMap.has(category.parent_id)) {
+            // This is a child category
+            const parent = categoryMap.get(category.parent_id)!
+            categoryNode.level = (parent.level || 0) + 1
+            parent.children!.push(categoryNode)
+        } else {
+            // This is a root category
+            categoryNode.level = 0
+            rootCategories.push(categoryNode)
+        }
+    })
+
+    return rootCategories
+}
 
 const CategoryList = () => {
-    const [categories, setCategories] = useState<Category[]>(mockCategories)
+    const [categories, setCategories] = useState<Category[]>([])
+    const [loading, setLoading] = useState(true)
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-    const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
     const [modalMode, setModalMode] = useState<'add' | 'edit'>('add')
+    const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+
+    // Process API response to flat categories array
+    const processApiResponse = (response: any): Category[] => {
+        let flatCategories: Category[] = []
+        
+        // Handle different response structures
+        if (Array.isArray(response)) {
+            // Direct array response
+            flatCategories = response.map((cat: any) => ({
+                id: cat.id,
+                name: cat.name,
+                slug: cat.slug,
+                description: cat.description,
+                image: cat.image,
+                parent_id: cat.parent_id,
+                children: [],
+                productCount: cat.product_count || 0,
+                isExpanded: false,
+                level: 0
+            }))
+        } else if (response && response.categories && Array.isArray(response.categories)) {
+            // Response with categories property
+            flatCategories = response.categories.map((cat: any) => ({
+                id: cat.id,
+                name: cat.name,
+                slug: cat.slug,
+                description: cat.description,
+                image: cat.image,
+                parent_id: cat.parent_id,
+                children: [],
+                productCount: cat.product_count || 0,
+                isExpanded: false,
+                level: 0
+            }))
+        } else if (response && response.data && response.data.categories && Array.isArray(response.data.categories)) {
+            // Response with data.categories property
+            flatCategories = response.data.categories.map((cat: any) => ({
+                id: cat.id,
+                name: cat.name,
+                slug: cat.slug,
+                description: cat.description,
+                image: cat.image,
+                parent_id: cat.parent_id,
+                children: [],
+                productCount: cat.product_count || 0,
+                isExpanded: false,
+                level: 0
+            }))
+        }
+        
+        return flatCategories
+    }
+
+    // Convert flat categories to hierarchical tree structure
+    const buildCategoryTree = (flatCategories: Category[]): Category[] => {
+        const categoryMap = new Map<string | number, Category>()
+        const rootCategories: Category[] = []
+
+        // First pass: create a map of all categories
+        flatCategories.forEach(category => {
+            categoryMap.set(category.id, { ...category, children: [] })
+        })
+
+        // Second pass: build the tree structure
+        flatCategories.forEach(category => {
+            const categoryWithChildren = categoryMap.get(category.id)!
+            
+            if (!category.parent_id || category.parent_id === null || category.parent_id === '') {
+                // This is a root category
+                rootCategories.push(categoryWithChildren)
+            } else {
+                // This is a child category
+                const parent = categoryMap.get(category.parent_id)
+                if (parent) {
+                    parent.children = parent.children || []
+                    parent.children.push(categoryWithChildren)
+                }
+            }
+        })
+
+        return rootCategories
+    }
+
+    // Fetch categories from API
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                setLoading(true)
+                const response = await apiGetCategoryList<{ categories: any[] }>()
+                
+                const flatCategories = processApiResponse(response)
+                
+                // Convert flat list to tree structure
+                const treeCategories = buildCategoryTree(flatCategories)
+                setCategories(treeCategories)
+            } catch (error) {
+                console.error('Error fetching categories:', error)
+                setCategories([])
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchCategories()
+    }, [])
 
     // Handler functions
     const handleAddCategory = () => {
@@ -141,30 +184,67 @@ const CategoryList = () => {
         setIsDeleteDialogOpen(true)
     }
 
-    const confirmDelete = () => {
-        if (selectedCategory) {
-            // Here you would call the API to delete the category
-            console.log('Deleting category:', selectedCategory.id)
+    const confirmDelete = async () => {
+        if (!selectedCategory) return
+        
+        try {
+            await apiDeleteCategory(selectedCategory.id)
+            await refreshCategories()
             setIsDeleteDialogOpen(false)
             setSelectedCategory(null)
+        } catch (error) {
+            // Handle error silently or show user-friendly message
         }
     }
 
-    const handleSaveCategory = (categoryData: Partial<Category>) => {
-        if (modalMode === 'add') {
-            // Add new category logic
-            console.log('Adding category:', categoryData)
-        } else {
-            // Edit category logic
-            console.log('Editing category:', categoryData)
+    // Function to refresh categories list
+    const refreshCategories = async () => {
+        try {
+            setLoading(true)
+            const response = await apiGetCategoryList<{ categories: any[] }>()
+            
+            const flatCategories = processApiResponse(response)
+            
+            // Convert flat list to tree structure
+            const treeCategories = buildCategoryTree(flatCategories)
+            setCategories(treeCategories)
+        } catch (error) {
+            console.error('Error refreshing categories:', error)
+        } finally {
+            setLoading(false)
         }
-        setIsModalOpen(false)
-        setSelectedCategory(null)
+    }
+
+    const handleSaveCategory = async (categoryData: Partial<Category>) => {
+        try {
+            // Prepare data for API
+            const apiData: any = {
+                name: categoryData.name || '',
+                slug: categoryData.slug || ''
+            }
+            
+            // Only include parent_id if it has a valid value
+            if (categoryData.parent_id && categoryData.parent_id !== '') {
+                apiData.parent_id = parseInt(String(categoryData.parent_id))
+            }
+
+            if (modalMode === 'add') {
+                await apiCreateCategory(apiData)
+            } else if (modalMode === 'edit' && selectedCategory) {
+                await apiUpdateCategory(selectedCategory.id, apiData)
+            }
+            
+            await refreshCategories()
+            setIsModalOpen(false)
+            setSelectedCategory(null)
+        } catch (error) {
+            console.error('Error saving category:', error)
+            // Handle error silently or show user-friendly message
+        }
     }
 
     const handleReorder = (reorderedCategories: Category[]) => {
         setCategories(reorderedCategories)
-        console.log('Categories reordered:', reorderedCategories)
     }
 
     return (
@@ -193,12 +273,20 @@ const CategoryList = () => {
                     </div>
                     
                     {/* محتوای اصلی */}
-                    <CategoriesTable 
-                        categories={categories}
-                        onEdit={handleEditCategory}
-                        onDelete={handleDeleteCategory}
-                        onReorder={handleReorder}
-                    />
+                    {loading ? (
+                        <div className="flex items-center justify-center py-12">
+                            <div className="text-center">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+                                <p className="text-gray-600 dark:text-gray-400">در حال بارگذاری دسته‌بندی‌ها...</p>
+                            </div>
+                        </div>
+                    ) : (
+                        <CategoryTreeView 
+                            categories={buildCategoryTree(categories)}
+                            onEdit={handleEditCategory}
+                            onDelete={handleDeleteCategory}
+                        />
+                    )}
                 </div>
             </AdaptiveCard>
 
@@ -207,6 +295,7 @@ const CategoryList = () => {
                 isOpen={isModalOpen}
                 mode={modalMode}
                 category={selectedCategory}
+                categories={categories}
                 onClose={() => setIsModalOpen(false)}
                 onSave={handleSaveCategory}
             />

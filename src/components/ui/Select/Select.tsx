@@ -163,6 +163,7 @@ function Select<
                         ),
                     indicatorsContainer: () => 'select-indicators-container',
                     singleValue: () => 'select-single-value',
+                   
                     multiValue: () => 'select-multi-value',
                     multiValueLabel: () => 'select-multi-value-label',
                     multiValueRemove: () => 'select-multi-value-remove',

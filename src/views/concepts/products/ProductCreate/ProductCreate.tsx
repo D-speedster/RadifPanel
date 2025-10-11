@@ -5,9 +5,9 @@ import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import ProductForm from '../ProductForm'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import sleep from '@/utils/sleep'
 import { TbTrash } from 'react-icons/tb'
 import { useNavigate } from 'react-router'
+import { apiCreateProduct } from '@/services/ProductService'
 import type { ProductFormSchema } from '../ProductForm/types'
 
 const ProductCreate = () => {
@@ -18,15 +18,42 @@ const ProductCreate = () => {
     const [isSubmiting, setIsSubmiting] = useState(false)
 
     const handleFormSubmit = async (values: ProductFormSchema) => {
-        console.log('Submitted values', values)
-        setIsSubmiting(true)
-        await sleep(800)
-        setIsSubmiting(false)
-        toast.push(
-            <Notification type="success">محصول ایجاد شد!</Notification>,
-            { placement: 'top-center' },
-        )
-        navigate('/concepts/products/product-list')
+        try {
+            setIsSubmiting(true)
+            
+            // ساخت بادی درخواست مطابق نیاز API
+            const payload: any = {
+                title: values.name,
+                slug: values.productCode,
+                image: values.imgList?.[0]?.img || '',
+              
+            }
+            
+            // فقط در صورت وجود parent_id آن را اضافه کن
+            if (values.parent_id && values.parent_id.trim() !== '') {
+                payload.parent_id = values.parent_id
+            }
+            
+            console.log('🚀 Payload being sent:', payload)
+            console.log('🔍 Form values:', values)
+            
+            await apiCreateProduct(payload)
+            
+            toast.push(
+                <Notification type="success">محصول با موفقیت ایجاد شد!</Notification>,
+                { placement: 'top-center' },
+            )
+            navigate('/concepts/products/product-list')
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    خطا در ایجاد محصول: {error instanceof Error ? error.message : 'خطای نامشخص'}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        } finally {
+            setIsSubmiting(false)
+        }
     }
 
     const handleConfirmDiscard = () => {
@@ -59,7 +86,7 @@ const ProductCreate = () => {
                     bulkDiscountPrice: '',
                     costPerItem: '',
                     imgList: [],
-                    category: '',
+                    parent_id: '',
                     tags: [],
                     brand: '',
                 }}
