@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect } from 'react'
 import Avatar from '@/components/ui/Avatar'
+import Button from '@/components/ui/Button'
 import Tooltip from '@/components/ui/Tooltip'
 import DataTable from '@/components/shared/DataTable'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
@@ -40,25 +41,23 @@ const ActionColumn = ({
     onDelete: () => void
 }) => {
     return (
-        <div className="flex items-center justify-end gap-3">
-            <Tooltip title="ویرایش">
-                <div
-                    className={`text-xl cursor-pointer select-none font-semibold`}
-                    role="button"
-                    onClick={onEdit}
-                >
-                    <TbPencil />
-                </div>
-            </Tooltip>
-            <Tooltip title="حذف">
-                <div
-                    className={`text-xl cursor-pointer select-none font-semibold`}
-                    role="button"
-                    onClick={onDelete}
-                >
-                    <TbTrash />
-                </div>
-            </Tooltip>
+        <div className="flex items-center justify-end gap-2">
+            <Button
+                size="sm"
+                className="px-3 py-1.5 text-xs border border-blue-300 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center gap-1"
+                onClick={onEdit}
+            >
+                <TbPencil className="w-4 h-4" />
+                ویرایش
+            </Button>
+            <Button
+                size="sm"
+                className="px-3 py-1.5 text-xs border border-red-300 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-1"
+                onClick={onDelete}
+            >
+                <TbTrash className="w-4 h-4" />
+                حذف
+            </Button>
         </div>
     )
 }

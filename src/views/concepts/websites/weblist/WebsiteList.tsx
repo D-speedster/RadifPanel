@@ -7,21 +7,18 @@ import WebsiteListSelected from './components/WebsiteListSelected'
 
 const WebsiteList = () => {
     return (
-        <>
-            <Container>
+        <Container className="h-full">
+            <div className="flex flex-col gap-4 h-full">
+                <WebsiteListActionTools />
                 <AdaptiveCard>
                     <div className="flex flex-col gap-4">
-                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                            <h3>وب‌سایت‌ها</h3>
-                            <WebsiteListActionTools />
-                        </div>
                         <WebsiteListTableTools />
                         <WebsiteListTable />
+                        <WebsiteListSelected />
                     </div>
                 </AdaptiveCard>
-            </Container>
-            <WebsiteListSelected />
-        </>
+            </div>
+        </Container>
     )
 }
 

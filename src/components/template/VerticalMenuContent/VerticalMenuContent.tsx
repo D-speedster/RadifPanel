@@ -44,13 +44,20 @@ const VerticalMenuContent = (props: VerticalMenuContentProps) => {
 
     const [defaulExpandKey, setDefaulExpandKey] = useState<string[]>([])
 
-    const { activedRoute } = useMenuActive(navigationTree, routeKey)
+    const { activedRoute, includedRouteTree } = useMenuActive(
+        navigationTree,
+        routeKey,
+    )
 
     useEffect(() => {
         if (activedRoute?.parentKey) {
-            setDefaulExpandKey([activedRoute?.parentKey])
+            setDefaulExpandKey([activedRoute.parentKey])
+        } else if (includedRouteTree?.key) {
+            setDefaulExpandKey([includedRouteTree.key])
+        } else {
+            setDefaulExpandKey([])
         }
-    }, [activedRoute?.parentKey])
+    }, [activedRoute?.parentKey, includedRouteTree?.key])
 
     const handleLinkClick = () => {
         onMenuItemClick?.()
@@ -141,7 +148,7 @@ const VerticalMenuContent = (props: VerticalMenuContentProps) => {
         <Menu
             className="px-4 pb-4"
             sideCollapsed={collapsed}
-            defaultActiveKeys={activedRoute?.key ? [activedRoute.key] : []}
+            activeKeys={activedRoute?.key ? [activedRoute.key] : []}
             defaultExpandedKeys={defaulExpandKey}
             defaultCollapseActiveKeys={
                 activedRoute?.parentKey ? [activedRoute.parentKey] : []

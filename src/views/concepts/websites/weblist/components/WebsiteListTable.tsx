@@ -14,7 +14,6 @@ import {
     TbX,
     TbClock,
     TbQuestionMark,
-    TbDotsVertical,
     TbWorld,
     TbCalendar,
     TbPackage,
@@ -23,6 +22,7 @@ import {
 } from 'react-icons/tb'
 import { useNavigate } from 'react-router-dom'
 import { apiGetWebsitesList } from '@/services/WebsiteService'
+import useWebsiteList from '../store/websiteListStore'
 import type { Website } from '../types'
 import type { ColumnDef } from '@/components/shared/DataTable'
 
@@ -93,7 +93,6 @@ const ActionColumn = ({
     onCrawl: () => void
     isCrawling: boolean
 }) => {
-    const [showMenu, setShowMenu] = useState(false)
 
     const handleOpenWebsite = () => {
         window.open(row.url, '_blank')
@@ -126,13 +125,12 @@ const ActionColumn = ({
     }
 
     return (
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center justify-end gap-2">
             <Button
                 size="sm"
                 variant="solid"
                 className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 text-xs"
                 onClick={handleOpenWebsite}
-                icon={<TbExternalLink className="w-3 h-3" />}
             >
                 باز کردن
             </Button>
@@ -146,68 +144,83 @@ const ActionColumn = ({
                     className={`p-1.5 ${isCrawling ? 'text-blue-500' : ''}`}
                 />
             </Tooltip>
-            <div className="relative">
-                <Tooltip title="عملیات بیشتر">
-                    <button
-                        className="p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        onClick={() => setShowMenu(!showMenu)}
-                    >
-                        <TbDotsVertical className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                    </button>
-                </Tooltip>
-                {showMenu && (
-                    <div className="absolute left-0 top-full mt-1 w-32 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10">
-                        <button
-                            className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"
-                            onClick={() => {
-                                onEdit()
-                                setShowMenu(false)
-                            }}
-                        >
-                            <TbPencil className="w-4 h-4" />
-                            ویرایش
-                        </button>
-                        <button
-                            className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 text-red-600"
-                            onClick={() => {
-                                onDelete()
-                                setShowMenu(false)
-                            }}
-                        >
-                            <TbTrash className="w-4 h-4" />
-                            حذف
-                        </button>
-                    </div>
-                )}
-            </div>
+            <Button
+                size="sm"
+                className="px-3 py-1.5 text-xs border border-blue-300 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center gap-1"
+                onClick={onEdit}
+            >
+                <TbPencil className="w-4 h-4" />
+                ویرایش
+            </Button>
+            <Button
+                size="sm"
+                className="px-3 py-1.5 text-xs border border-red-300 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-1"
+                onClick={onDelete}
+            >
+                <TbTrash className="w-4 h-4" />
+                حذف
+            </Button>
         </div>
     )
 }
 
 const WebsiteListTable = () => {
     const navigate = useNavigate()
-    const [websites, setWebsites] = useState<Website[]>([])
-    const [loading, setLoading] = useState(true)
     const [crawlingWebsites, setCrawlingWebsites] = useState<Set<number>>(new Set())
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
     const [selectedWebsite, setSelectedWebsite] = useState<Website | null>(null)
+
+    const {
+        websiteList,
+        websiteListTotal,
+        tableData,
+        // removed duplicate selectedWebsite from store to avoid name clash
+        isLoading,
+        error,
+        setWebsiteList,
+        setLoading,
+        setWebsiteListTotal,
+        setTableData,
+        // removed unused alias setSelectedWebsite: setSelectedWebsiteStore
+    } = useWebsiteList()
+
+    // Client-side filtering for search
+    const filteredWebsiteList = useMemo(() => {
+        if (!tableData.query || tableData.query.trim() === '') {
+            return websiteList
+        }
+        
+        const searchTerm = tableData.query.toLowerCase().trim()
+        return websiteList.filter(website => 
+            website.name.toLowerCase().includes(searchTerm) ||
+            website.url.toLowerCase().includes(searchTerm)
+        )
+    }, [websiteList, tableData.query])
 
     useEffect(() => {
         const fetchWebsites = async () => {
             try {
                 setLoading(true)
-                const response = await apiGetWebsitesList({})
-                setWebsites(response.list || [])
+                const response = await apiGetWebsitesList({
+                    // Remove query from API call since backend doesn't support it
+                    status: tableData.status,
+                    crawlerStatus: tableData.crawlerStatus,
+                    pageIndex: tableData.pageIndex,
+                    pageSize: tableData.pageSize,
+                })
+                setWebsiteList(response.list || [])
+                setWebsiteListTotal(response.total || 0)
             } catch (error) {
                 console.error('Error fetching websites:', error)
-                setWebsites([])
+                setWebsiteList([])
+                setWebsiteListTotal(0)
             } finally {
                 setLoading(false)
             }
         }
 
         fetchWebsites()
-    }, [])
+    }, [tableData.status, tableData.crawlerStatus, tableData.pageIndex, tableData.pageSize, setWebsiteList, setWebsiteListTotal, setLoading])
 
     const columns: ColumnDef<Website>[] = useMemo(
         () => [
@@ -339,17 +352,34 @@ const WebsiteListTable = () => {
         console.log('Start crawling:', website.id)
     }
 
+    const onPaginationChange = (page: number) => {
+        setTableData((prevData) => ({
+            ...prevData,
+            pageIndex: page,
+        }))
+    }
+
+    const onSelectChange = (value: number) => {
+        setTableData((prevData) => ({
+            ...prevData,
+            pageSize: value,
+            pageIndex: 1,
+        }))
+    }
+
     return (
         <>
             <DataTable<Website>
                 columns={columns}
-                data={websites}
-                loading={loading}
+                data={filteredWebsiteList}
+                loading={isLoading}
                 pagingData={{
-                    total: websites.length,
-                    pageIndex: 0,
-                    pageSize: 10,
+                    total: filteredWebsiteList.length,
+                    pageIndex: tableData.pageIndex,
+                    pageSize: tableData.pageSize,
                 }}
+                onPaginationChange={onPaginationChange}
+                onSelectChange={onSelectChange}
                 selectable
                 enableSorting
             />

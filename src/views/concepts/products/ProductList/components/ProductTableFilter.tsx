@@ -76,7 +76,7 @@ const validationSchema: ZodType<FormSchema> = z.object({
 const ProductTableFilter = () => {
     const [filterIsOpen, setFilterIsOpen] = useState(false)
 
-    const { filterData, setFilterData } = useProductList()
+    const { filterData, setFilterData, tableData, setTableData } = useProductList()
 
     const { handleSubmit, control, getValues } = useForm<FormSchema>({
         defaultValues: filterData,
@@ -85,6 +85,9 @@ const ProductTableFilter = () => {
 
     const onSubmit = (values: FormSchema) => {
         setFilterData(values)
+        // Reset to first page when applying filters
+        const newTableData = { ...tableData, pageIndex: 1 }
+        setTableData(newTableData)
         setFilterIsOpen(false)
     }
 

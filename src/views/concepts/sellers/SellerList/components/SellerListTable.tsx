@@ -98,7 +98,7 @@ const ActionColumn = ({
             </Button>
             <Button
                 size="sm"
-                className="px-3 py-1.5 text-xs border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-1"
+                className="px-3 py-1.5 text-xs border border-blue-300 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center gap-1"
                 onClick={onEdit}
             >
                 <TbPencil className="w-4 h-4" />

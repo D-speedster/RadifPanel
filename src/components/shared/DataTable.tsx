@@ -12,6 +12,7 @@ import Select from '@/components/ui/Select'
 import Checkbox from '@/components/ui/Checkbox'
 import TableRowSkeleton from './loaders/TableRowSkeleton'
 import Loading from './Loading'
+import ModernPagination from '@/components/ui/ModernPagination'
 import FileNotFound from '@/assets/svg/FileNotFound'
 import {
     useReactTable,
@@ -375,27 +376,24 @@ function DataTable<T>(props: DataTableProps<T>) {
                     </TBody>
                 )}
             </Table>
-            <div className="flex items-center justify-between mt-4">
-                <Pagination
-                    pageSize={pageSize}
-                    currentPage={pageIndex}
-                    total={total}
-                    onChange={handlePaginationChange}
+            
+            {/* Modern Pagination */}
+            {pagingData && pagingData.total > 0 && (
+                <ModernPagination
+                    currentPage={pagingData.pageIndex + 1}
+                    totalPages={Math.ceil((pagingData.total || 0) / pagingData.pageSize)}
+                    totalItems={pagingData.total || 0}
+                    pageSize={pagingData.pageSize}
+                    onPageChange={(page) => {
+                        onPaginationChange?.(page)
+                    }}
+                    onPageSizeChange={(pageSize) => {
+                        onPaginationChange?.(1) // Reset to first page when changing page size
+                    }}
+                    showPageSizeSelector={true}
+                    showTotalInfo={true}
                 />
-                <div style={{ minWidth: 130 }}>
-                    <Select
-                        instanceId={instanceId}
-                        size="sm"
-                        menuPlacement="top"
-                        isSearchable={false}
-                        value={pageSizeOption.filter(
-                            (option) => option.value === pageSize,
-                        )}
-                        options={pageSizeOption}
-                        onChange={(option) => handleSelectChange(option?.value)}
-                    />
-                </div>
-            </div>
+            )}
         </Loading>
     )
 }

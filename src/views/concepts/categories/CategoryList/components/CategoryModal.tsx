@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui'
 import { HiX, HiUpload } from 'react-icons/hi'
+import { faToEnSlug } from '@/utils/slugify'
 
 interface Category {
     id: string
@@ -8,7 +9,7 @@ interface Category {
     slug: string
     description?: string
     image?: string
-    parentId?: string | null
+    parent_id?: string | null
     children?: Category[]
     productCount?: number
     isExpanded?: boolean
@@ -29,9 +30,10 @@ const CategoryModal = ({ isOpen, mode, category, categories, onClose, onSave }: 
         name: '',
         slug: '',
         description: '',
-        parentId: '',
+        parent_id: '',
         image: ''
     })
+    const [autoSlug, setAutoSlug] = useState(true)
 
     // Helper function to build hierarchical category options
     const buildCategoryOptions = (categories: Category[], level = 0): JSX.Element[] => {
@@ -55,18 +57,16 @@ const CategoryModal = ({ isOpen, mode, category, categories, onClose, onSave }: 
         return options
     }
 
-    // Get parent categories (categories without parentId) and build tree structure
+    // Get parent categories (categories without parent_id) and build tree structure
     const getParentCategoriesWithChildren = (): Category[] => {
-        const parentCategories = categories.filter(cat => !cat.parentId || cat.parentId === null || cat.parentId === '')
-        
+        const parentCategories = categories.filter(cat => !cat.parent_id || cat.parent_id === null || cat.parent_id === '')
         // Build tree structure
         const buildTree = (parents: Category[]): Category[] => {
             return parents.map(parent => ({
                 ...parent,
-                children: categories.filter(cat => cat.parentId === parent.id)
+                children: categories.filter(cat => cat.parent_id === parent.id)
             }))
         }
-        
         return buildTree(parentCategories)
     }
 
@@ -77,7 +77,7 @@ const CategoryModal = ({ isOpen, mode, category, categories, onClose, onSave }: 
                     name: category.name || '',
                     slug: category.slug || '',
                     description: category.description || '',
-                    parentId: category.parentId || '',
+                    parent_id: category.parent_id || '',
                     image: category.image || ''
                 })
             } else {
@@ -85,7 +85,7 @@ const CategoryModal = ({ isOpen, mode, category, categories, onClose, onSave }: 
                     name: '',
                     slug: '',
                     description: '',
-                    parentId: '',
+                    parent_id: '',
                     image: ''
                 })
             }
@@ -97,14 +97,8 @@ const CategoryModal = ({ isOpen, mode, category, categories, onClose, onSave }: 
             ...prev,
             [field]: value
         }))
-        
-        // Auto-generate slug from name
-        if (field === 'name') {
-            const slug = value
-                .toLowerCase()
-                .replace(/[^a-z0-9\u0600-\u06FF\s-]/g, '')
-                .replace(/\s+/g, '-')
-                .trim()
+        if (field === 'name' && autoSlug) {
+            const slug = faToEnSlug(value)
             setFormData(prev => ({
                 ...prev,
                 slug
@@ -116,7 +110,7 @@ const CategoryModal = ({ isOpen, mode, category, categories, onClose, onSave }: 
         e.preventDefault()
         onSave({
             ...formData,
-            parentId: formData.parentId || null
+            parent_id: formData.parent_id || null
         })
     }
 
@@ -201,10 +195,30 @@ const CategoryModal = ({ isOpen, mode, category, categories, onClose, onSave }: 
                                 borderColor: '#E2E8F0',
                                 borderRadius: '0.5rem',
                                 fontSize: '0.85rem',
-                                backgroundColor: '#F7FAFC'
+                                backgroundColor: autoSlug ? '#F7FAFC' : 'white'
                             }}
                             placeholder="category-slug"
+                            disabled={autoSlug}
                         />
+                        <div className="flex items-center gap-2 mt-2">
+                            <input
+                                type="checkbox"
+                                checked={autoSlug}
+                                onChange={(e) => {
+                                    const checked = e.target.checked
+                                    setAutoSlug(checked)
+                                    if (checked) {
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            slug: faToEnSlug(prev.name)
+                                        }))
+                                    }
+                                }}
+                            />
+                            <span className="text-sm" style={{ color: '#4A5568' }}>
+                                تولید خودکار اسلاگ انگلیسی از نام
+                            </span>
+                        </div>
                     </div>
 
                     {/* دسته‌بندی مادر */}
@@ -216,8 +230,8 @@ const CategoryModal = ({ isOpen, mode, category, categories, onClose, onSave }: 
                             دسته‌بندی مادر
                         </label>
                         <select
-                            value={formData.parentId}
-                            onChange={(e) => handleInputChange('parentId', e.target.value)}
+                            value={formData.parent_id}
+                            onChange={(e) => handleInputChange('parent_id', e.target.value)}
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors"
                             style={{
                                 borderColor: '#E2E8F0',

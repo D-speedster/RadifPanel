@@ -5,6 +5,7 @@ import type { Ref } from 'react'
 
 export interface MenuProps extends CommonProps {
     defaultActiveKeys?: Array<string>
+    activeKeys?: Array<string>
     defaultExpandedKeys?: Array<string>
     defaultCollapseActiveKeys?: Array<string>
     menuItemHeight?: number
@@ -18,6 +19,7 @@ const Menu = (props: MenuProps) => {
         children,
         className,
         defaultActiveKeys = [],
+        activeKeys,
         defaultExpandedKeys = [],
         defaultCollapseActiveKeys = [],
         menuItemHeight = 48,
@@ -39,7 +41,7 @@ const Menu = (props: MenuProps) => {
                     menuItemHeight,
                     sideCollapsed,
                     defaultExpandedKeys,
-                    defaultActiveKeys,
+                    defaultActiveKeys: activeKeys || defaultActiveKeys,
                     defaultCollapseActiveKeys,
                 }}
             >

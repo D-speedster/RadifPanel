@@ -55,60 +55,49 @@ const buildCategoryTree = (categories: Category[]): Category[] => {
 
 const CategoryList = () => {
     const [categories, setCategories] = useState<Category[]>([])
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [modalMode, setModalMode] = useState<'add' | 'edit'>('add')
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+    const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null)
 
     // Process API response to flat categories array
     const processApiResponse = (response: any): Category[] => {
         let flatCategories: Category[] = []
+        let rawCategories: any[] = []
         
-        // Handle different response structures
+        // Extract categories array from different response structures
         if (Array.isArray(response)) {
             // Direct array response
-            flatCategories = response.map((cat: any) => ({
-                id: cat.id,
-                name: cat.name,
-                slug: cat.slug,
-                description: cat.description,
-                image: cat.image,
-                parent_id: cat.parent_id,
-                children: [],
-                productCount: cat.product_count || 0,
-                isExpanded: false,
-                level: 0
-            }))
+            rawCategories = response
         } else if (response && response.categories && Array.isArray(response.categories)) {
             // Response with categories property
-            flatCategories = response.categories.map((cat: any) => ({
-                id: cat.id,
-                name: cat.name,
-                slug: cat.slug,
-                description: cat.description,
-                image: cat.image,
-                parent_id: cat.parent_id,
-                children: [],
-                productCount: cat.product_count || 0,
-                isExpanded: false,
-                level: 0
-            }))
+            rawCategories = response.categories
         } else if (response && response.data && response.data.categories && Array.isArray(response.data.categories)) {
             // Response with data.categories property
-            flatCategories = response.data.categories.map((cat: any) => ({
-                id: cat.id,
-                name: cat.name,
-                slug: cat.slug,
-                description: cat.description,
-                image: cat.image,
-                parent_id: cat.parent_id,
-                children: [],
-                productCount: cat.product_count || 0,
-                isExpanded: false,
-                level: 0
-            }))
+            rawCategories = response.data.categories
+        } else if (response && response.data && Array.isArray(response.data)) {
+            // Response with data array (mock service)
+            rawCategories = response.data
+        } else {
+            console.warn('Unknown API response structure:', response)
+            return []
         }
+        
+        // Convert to standardized format
+        flatCategories = rawCategories.map((cat: any) => ({
+            id: cat.id,
+            name: cat.name || '',
+            slug: cat.slug || '',
+            description: cat.description || '',
+            image: cat.image || '',
+            parent_id: cat.parent_id ?? cat.parentId ?? null,
+            children: [],
+            productCount: cat.productsCount ?? cat.product_count ?? cat.productCount ?? 0,
+            isExpanded: false,
+            level: 0
+        }))
         
         return flatCategories
     }
@@ -118,24 +107,44 @@ const CategoryList = () => {
         const categoryMap = new Map<string | number, Category>()
         const rootCategories: Category[] = []
 
-        // First pass: create a map of all categories
+        // First pass: create a map of all categories with children array
         flatCategories.forEach(category => {
-            categoryMap.set(category.id, { ...category, children: [] })
+            categoryMap.set(category.id, { 
+                ...category, 
+                children: [],
+                isExpanded: false,
+                level: 0
+            })
         })
 
         // Second pass: build the tree structure
         flatCategories.forEach(category => {
             const categoryWithChildren = categoryMap.get(category.id)!
             
-            if (!category.parent_id || category.parent_id === null || category.parent_id === '') {
+            // Check if this is a root category
+            const parentId = category.parent_id
+            const isRootCategory = !parentId || 
+                                   parentId === null || 
+                                   parentId === '' || 
+                                   parentId === 0 ||
+                                   parentId === '0'
+            
+            if (isRootCategory) {
                 // This is a root category
+                categoryWithChildren.level = 0
                 rootCategories.push(categoryWithChildren)
             } else {
-                // This is a child category
-                const parent = categoryMap.get(category.parent_id)
-                if (parent) {
-                    parent.children = parent.children || []
-                    parent.children.push(categoryWithChildren)
+                // This is a child category - find its parent
+                const parentCategory = categoryMap.get(parentId)
+                if (parentCategory) {
+                    categoryWithChildren.level = (parentCategory.level || 0) + 1
+                    parentCategory.children = parentCategory.children || []
+                    parentCategory.children.push(categoryWithChildren)
+                } else {
+                    // Parent not found, treat as root category
+                    console.warn(`Parent category with ID ${parentId} not found for category "${category.name}". Treating as root category.`)
+                    categoryWithChildren.level = 0
+                    rootCategories.push(categoryWithChildren)
                 }
             }
         })
@@ -154,6 +163,7 @@ const CategoryList = () => {
                 
                 // Convert flat list to tree structure
                 const treeCategories = buildCategoryTree(flatCategories)
+                
                 setCategories(treeCategories)
             } catch (error) {
                 console.error('Error fetching categories:', error)
@@ -207,6 +217,7 @@ const CategoryList = () => {
             
             // Convert flat list to tree structure
             const treeCategories = buildCategoryTree(flatCategories)
+            
             setCategories(treeCategories)
         } catch (error) {
             console.error('Error refreshing categories:', error)
@@ -272,6 +283,8 @@ const CategoryList = () => {
                         </Button>
                     </div>
                     
+
+
                     {/* محتوای اصلی */}
                     {loading ? (
                         <div className="flex items-center justify-center py-12">
