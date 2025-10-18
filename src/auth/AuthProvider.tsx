@@ -16,7 +16,7 @@ import type {
 import type { ReactNode, Ref } from 'react'
 import type { NavigateFunction } from 'react-router'
 import { useThemeStore } from '@/store/themeStore'
-import { ADMIN, OPERATOR, SELLER, SUPER_ADMIN } from '@/constants/roles.constant'
+import { ADMIN, OPERATOR, SELLER, SUPER_ADMIN, USER } from '@/constants/roles.constant'
 
 type AuthProviderProps = { children: ReactNode }
 
@@ -40,9 +40,10 @@ const IsolatedNavigator = ({ ref }: { ref: Ref<IsolatedNavigatorRef> }) => {
 const getThemeForAuthority = (authority: string[] = []) => {
     if (authority.includes(SUPER_ADMIN)) return 'purple'
     if (authority.includes(ADMIN)) return 'purple'
-    if (authority.includes(OPERATOR)) return 'green'
-    if (authority.includes(SELLER)) return 'orange'
-    return 'default'
+    if (authority.includes(OPERATOR)) return 'dark'
+    if (authority.includes(SELLER)) return 'dark'
+    if (authority.includes(USER)) return 'dark'
+    return 'dark'
 }
 
 function AuthProvider({ children }: AuthProviderProps) {

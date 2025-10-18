@@ -20,11 +20,9 @@ const useUserList = () => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([_, tableParams, filterParams]) => {
             // Combine table data and filter data properly
-            const params = {
+            const params: Record<string, any> = {
                 // Search query
                 search: tableParams.query || '',
-                // Role filter - convert to comma-separated string if array
-                role: Array.isArray(filterParams.userRole) ? filterParams.userRole.join(',') : filterParams.userRole || '',
                 // Status filter
                 status: filterParams.userStatus || '',
                 // Pagination
@@ -32,6 +30,11 @@ const useUserList = () => {
                 limit: tableParams.pageSize || 10,
                 // Sorting
                 sort: tableParams.sort || '',
+            }
+
+            // Do NOT send role when multiple roles selected; rely on client-side filter
+            if (Array.isArray(filterParams.userRole) && filterParams.userRole.length === 1) {
+                params.role = filterParams.userRole[0]
             }
             
             // Remove empty values
@@ -41,7 +44,7 @@ const useUserList = () => {
                 }
             })
             
-            return apiGetUserList<GetUserListResponse, TableQueries>(params)
+            return apiGetUserList<GetUserListResponse, TableQueries>(params as any)
         },
         {
             revalidateOnFocus: false,
@@ -49,7 +52,7 @@ const useUserList = () => {
             errorRetryInterval: 2000,
             onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
                 // Don't retry on 404 or 401
-                if (error.status === 404 || error.status === 401) return
+                if ((error as any).status === 404 || (error as any).status === 401) return
                 // Retry after delay
                 setTimeout(() => revalidate({ retryCount }), 2000)
             }

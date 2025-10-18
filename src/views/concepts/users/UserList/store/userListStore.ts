@@ -13,8 +13,8 @@ export const initialTableData: TableQueries = {
 }
 
 export const initialFilterData = {
-    userStatus: 'active',
-    userRole: ['admin', 'user', 'moderator'],
+    userStatus: '',
+    userRole: [],
 }
 
 export type UsersListState = {

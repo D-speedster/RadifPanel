@@ -26,12 +26,12 @@ type SignInFormSchema = {
 const validationSchema: ZodType<SignInFormSchema> = z.object({
     // Treat userName as email for the API
     userName: z
-        .string({ required_error: 'Please enter your email' })
-        .min(1, { message: 'Please enter your email' })
-        .email({ message: 'Please enter a valid email address' }),
+        .string({ required_error: 'لطفاً ایمیل خود را وارد کنید' })
+        .min(1, { message: 'لطفاً ایمیل خود را وارد کنید' })
+        .email({ message: 'لطفاً یک آدرس ایمیل معتبر وارد کنید' }),
     password: z
-        .string({ required_error: 'Please enter your password' })
-        .min(1, { message: 'Please enter your password' }),
+        .string({ required_error: 'لطفاً رمز عبور خود را وارد کنید' })
+        .min(1, { message: 'لطفاً رمز عبور خود را وارد کنید' }),
 })
 
 const SignInForm = (props: SignInFormProps) => {
@@ -73,7 +73,7 @@ const SignInForm = (props: SignInFormProps) => {
         <div className={className}>
             <Form onSubmit={handleSubmit(onSignIn)}>
                 <FormItem
-                    label="Email"
+                    label="ایمیل"
                     invalid={Boolean(errors.userName)}
                     errorMessage={errors.userName?.message}
                 >
@@ -83,7 +83,7 @@ const SignInForm = (props: SignInFormProps) => {
                         render={({ field }) => (
                             <Input
                                 type="email"
-                                placeholder="Email"
+                                placeholder="ایمیل"
                                 autoComplete="email"
                                 {...field}
                             />
@@ -91,7 +91,7 @@ const SignInForm = (props: SignInFormProps) => {
                     />
                 </FormItem>
                 <FormItem
-                    label="Password"
+                    label="رمز عبور"
                     invalid={Boolean(errors.password)}
                     errorMessage={errors.password?.message}
                     className={classNames(
@@ -106,7 +106,7 @@ const SignInForm = (props: SignInFormProps) => {
                         render={({ field }) => (
                             <PasswordInput
                                 type="password"
-                                placeholder="Password"
+                                placeholder="رمز عبور"
                                 autoComplete="current-password"
                                 {...field}
                             />
@@ -120,7 +120,7 @@ const SignInForm = (props: SignInFormProps) => {
                     variant="solid"
                     type="submit"
                 >
-                    {isSubmitting ? 'Signing in...' : 'Sign In'}
+                    {isSubmitting ? 'در حال ورود...' : 'ورود'}
                 </Button>
             </Form>
         </div>
