@@ -1,6 +1,5 @@
 import { useMemo, useState, useEffect } from 'react'
 import Avatar from '@/components/ui/Avatar'
-import Tooltip from '@/components/ui/Tooltip'
 import DataTable from '@/components/shared/DataTable'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import Badge from '@/components/ui/Badge'
@@ -11,7 +10,7 @@ import useSellerList from '../hooks/useSellerList'
 import { apiDeleteSeller } from '@/services/SellerService'
 import cloneDeep from 'lodash/cloneDeep'
 import { useNavigate } from 'react-router-dom'
-import { TbPencil, TbTrash, TbWifiOff, TbPhone, TbPackage, TbDotsVertical } from 'react-icons/tb'
+import { TbPencil, TbTrash, TbWifiOff, TbPhone, TbPackage } from 'react-icons/tb'
 import { FiUser, FiMail } from 'react-icons/fi'
 import { isOnline, getErrorMessage, addNetworkStatusListener } from '@/utils/networkUtils'
 import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
@@ -87,8 +86,6 @@ const ActionColumn = ({
     onEdit: () => void
     onDelete: () => void
 }) => {
-    const [showMenu, setShowMenu] = useState(false)
-
     return (
         <div className="flex items-center justify-end gap-2">
             <Button
@@ -99,40 +96,22 @@ const ActionColumn = ({
             >
                 مشاهده پروفایل
             </Button>
-            <div className="relative">
-                <Tooltip title="عملیات بیشتر">
-                    <button
-                        className="p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        onClick={() => setShowMenu(!showMenu)}
-                    >
-                        <TbDotsVertical className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                    </button>
-                </Tooltip>
-                {showMenu && (
-                    <div className="absolute left-0 top-full mt-1 w-32 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10">
-                        <button
-                            className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"
-                            onClick={() => {
-                                onEdit()
-                                setShowMenu(false)
-                            }}
-                        >
-                            <TbPencil className="w-4 h-4" />
-                            ویرایش
-                        </button>
-                        <button
-                            className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 text-red-600"
-                            onClick={() => {
-                                onDelete()
-                                setShowMenu(false)
-                            }}
-                        >
-                            <TbTrash className="w-4 h-4" />
-                            حذف
-                        </button>
-                    </div>
-                )}
-            </div>
+            <Button
+                size="sm"
+                className="px-3 py-1.5 text-xs border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-1"
+                onClick={onEdit}
+            >
+                <TbPencil className="w-4 h-4" />
+                ویرایش
+            </Button>
+            <Button
+                size="sm"
+                className="px-3 py-1.5 text-xs border border-red-300 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-1"
+                onClick={onDelete}
+            >
+                <TbTrash className="w-4 h-4" />
+                حذف
+            </Button>
         </div>
     )
 }
